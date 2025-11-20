@@ -16,7 +16,7 @@ console.log('FORM_UUID:', process.env.FORM_UUID);
 const { getAccessToken, queryReportData, getAttachmentUrl } = require('./services/yidaService');
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3001;
 
 // 配置请求体解析
 app.use(express.json());
@@ -91,11 +91,11 @@ app.post('/api/query-reports', async (req, res) => {
     
     // 构建响应数据，包含文件名称、下载链接和创建时间
     const reportsWithUrls = response.data.map(report => {
-      // 转换数据格式以匹配前端期望的格式
+      // 直接返回报告数据，不需要重新映射字段
       return {
         fileName: report.fileName,
         downloadUrl: report.downloadUrl || null,
-        createTime: report.createTime || report.gmtCreate || '',
+        createTime: report.createTime, // 使用已经格式化的创建时间
         formInstanceId: report.formInstanceId,
         error: report.error || null
       };

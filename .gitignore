@@ -27,9 +27,11 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 
-# 构建输出
-dist/
+# Next.js构建输出
+.next/
+out/
 build/
+dist/
 
 # 测试覆盖率
 coverage/
@@ -47,3 +49,82 @@ docker-compose.override.yml
 *.pem
 *.key
 *.cert
+
+# IDE和编辑器
+.vscode/
+.idea/
+
+# 运行时数据
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# 覆盖率目录
+lib-cov
+
+# nyc测试覆盖率
+.nyc_output
+
+# Grunt中间存储
+.grunt
+
+# Bower依赖目录
+bower_components
+
+# node-waf配置
+.lock-wscript
+
+# 编译的二进制插件
+build/Release
+
+# 依赖目录
+node_modules/
+jspm_packages/
+
+# TypeScript v1声明文件
+typings/
+
+# TypeScript缓存
+*.tsbuildinfo
+
+# 可选的npm缓存目录
+.npm
+
+# 可选的eslint缓存
+.eslintcache
+
+# Microbundle缓存
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# 可选的REPL历史
+.node_repl_history
+
+# yarn完整性文件
+.yarn-integrity
+
+# parcel-bundler缓存
+.cache
+.parcel-cache
+
+# Next.js构建输出
+.next
+
+# Nuxt.js构建/生成输出
+.nuxt
+dist
+
+# Gatsby文件
+.cache/
+public
+
+# Storybook构建输出
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/

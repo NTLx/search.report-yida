@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --nextui-background: #ffffff;
+  --nextui-foreground: #11181c;
+  --nextui-primary: #006fee;
+  --nextui-primary-foreground: #ffffff;
+  --nextui-secondary: #f1f3f5;
+  --nextui-secondary-foreground: #11181c;
+  --nextui-muted: #f1f3f5;
+  --nextui-muted-foreground: #696969;
+  --nextui-accent: #f1f3f5;
+  --nextui-accent-foreground: #11181c;
+  --nextui-destructive: #ff4d4d;
+  --nextui-destructive-foreground: #ffffff;
+  --nextui-border: #e5e5e5;
+  --nextui-input: #ffffff;
+  --nextui-ring: #006fee;
+  --nextui-content1: #ffffff;
+  --nextui-content2: #f1f3f5;
+  --nextui-content3: #e5e5e5;
+  --nextui-content4: #ffffff;
+}
+
+.dark {
+  --nextui-background: #000000;
+  --nextui-foreground: #ffffff;
+  --nextui-primary: #338ef7;
+  --nextui-primary-foreground: #ffffff;
+  --nextui-secondary: #1e1e1e;
+  --nextui-secondary-foreground: #ffffff;
+  --nextui-muted: #1e1e1e;
+  --nextui-muted-foreground: #a1a1aa;
+  --nextui-accent: #1e1e1e;
+  --nextui-accent-foreground: #ffffff;
+  --nextui-destructive: #ff4d4d;
+  --nextui-destructive-foreground: #ffffff;
+  --nextui-border: #262626;
+  --nextui-input: #1e1e1e;
+  --nextui-ring: #338ef7;
+  --nextui-content1: #0a0a0a;
+  --nextui-content2: #171717;
+  --nextui-content3: #262626;
+  --nextui-content4: #0a0a0a;
+}
+
+/* 自定义样式 */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* 网格背景效果 */
+.grid-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  z-index: -1;
+  opacity: 0.3;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 30px 30px; }
+}
+
+/* 响应式字体大小 */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* 平滑滚动 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 111, 238, 0.5);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 111, 238, 0.7);
+}
+
+/* 移动端优化 */
+@media (max-width: 640px) {
+  /* 触摸目标最小尺寸 */
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+  
+  /* 防止双击缩放 */
+  touch-action: manipulation;
+}
+
+/* 表格响应式优化 */
+@media (max-width: 640px) {
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .table-responsive th,
+  .table-responsive td {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* 卡片响应式优化 */
+@media (max-width: 640px) {
+  .card-responsive {
+    margin: 0.5rem;
+    border-radius: 0.75rem;
+  }
+}

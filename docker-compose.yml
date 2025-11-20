@@ -1,10 +1,9 @@
-version: '3'
-
 services:
-  report-yida:
+  search.report-yida:
     build: .
     ports:
-      - "8080:8080"
+      - "3000:3000"
+      - "3001:3001"
     environment:
       # 环境变量配置，可通过环境变量覆盖或在.env文件中配置
       - USERID=${USERID}
@@ -18,8 +17,13 @@ services:
       - PHONE_FIELD_ID=${PHONE_FIELD_ID}
       - ATTACHMENT_FIELD_ID=${ATTACHMENT_FIELD_ID}
       - NODE_ENV=${NODE_ENV:-production}
-      - PORT=${PORT:-8080}
+      - PORT=${PORT:-3001}
     volumes:
       # 可选：挂载.env文件
       # - ./env:/app/.env
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
