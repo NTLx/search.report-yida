@@ -1,0 +1,494 @@
+/* Magic UI 增强样式 */
+
+/* 全局变量定义 */
+:root {
+    --primary-color: #1890ff;
+    --secondary-color: #40a9ff;
+    --accent-color: #722ed1;
+    --text-color: #333;
+    --light-text: #666;
+    --background-color: #f5f7fa;
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --glow-color: rgba(24, 144, 255, 0.6);
+    --border-radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 背景网格图案 - Magic UI Grid Pattern */
+body {
+    background-color: var(--background-color);
+    background-image: 
+        linear-gradient(rgba(24, 144, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(24, 144, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    position: relative;
+    /* 修复触摸屏点击问题 - 移除overflow-x: hidden */
+    /* overflow-x: hidden; */
+}
+
+/* 交互式网格效果 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at center, 
+        transparent 20%, 
+        rgba(24, 144, 255, 0.02) 70%, 
+        rgba(24, 144, 255, 0.05) 100%);
+    pointer-events: none;
+    z-index: -1;
+    /* 修复触摸屏点击问题 - 移除touch-action: none */
+    /* touch-action: none; */
+}
+
+/* Aurora Text 极光文本效果 */
+.aurora-text {
+    position: relative;
+    background: linear-gradient(90deg, 
+        var(--primary-color), 
+        var(--accent-color), 
+        var(--secondary-color), 
+        var(--primary-color));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: auroraAnimation 8s ease-in-out infinite;
+    font-weight: 700;
+}
+
+@keyframes auroraAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Magic Card 效果 - 移动设备上禁用动画 */
+.magic-card {
+    position: relative;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    /* 修复触摸屏点击问题 - 移除overflow: hidden */
+    /* overflow: hidden; */
+}
+
+.magic-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(120deg, 
+        transparent, 
+        rgba(24, 144, 255, 0.1), 
+        transparent);
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 只在非移动设备上应用卡片悬停动画 */
+@media (min-width: 768px) {
+    .magic-card {
+        transition: var(--transition);
+    }
+    
+    .magic-card::before {
+        transition: transform 0.8s ease, opacity 0.4s ease;
+    }
+    
+    .magic-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .magic-card:hover::before {
+        transform: translateX(100%);
+        opacity: 1;
+    }
+}
+
+/* Shimmer Button 闪烁按钮效果 - 移动设备上禁用动画 */
+.shimmer-button {
+    position: relative;
+    /* 修复触摸屏点击问题 - 移除overflow: hidden */
+    /* overflow: hidden; */
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.shimmer-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+    opacity: 0;
+}
+
+@keyframes shimmer {
+    100% {
+        left: 100%;
+    }
+}
+
+/* 只在非移动设备上应用按钮悬停动画 */
+@media (min-width: 768px) {
+    .shimmer-button {
+        transition: var(--transition);
+    }
+    
+    .shimmer-button::before {
+        transition: all 0.3s ease;
+    }
+    
+    .shimmer-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px var(--glow-color);
+    }
+    
+    .shimmer-button:hover::before {
+        animation: shimmer 2s infinite;
+    }
+    
+    .shimmer-button:active {
+        transform: translateY(0);
+    }
+    
+    .shimmer-button:active::before {
+        animation: none;
+    }
+}
+
+/* Ripple 涟漪效果 */
+.ripple {
+    position: relative;
+    /* 修复触摸屏点击问题 - 移除overflow: hidden */
+    /* overflow: hidden; */
+}
+
+.ripple::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.5s, opacity 0.3s;
+}
+
+.ripple:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+}
+
+/* Cool Mode 效果 - 移动设备上禁用 */
+@media (min-width: 768px) {
+    .cool-mode {
+        /* 移除过渡效果 */
+        transition: none;
+    }
+    
+    /* 移除cool-mode的Hover效果 */
+    .cool-mode:hover {
+        /* 完全移除所有Hover效果 */
+        filter: none;
+        transform: none;
+        box-shadow: none;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+}
+
+/* Neon Gradient Card 霓虹渐变卡片 */
+.neon-gradient-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    /* 修复触摸屏点击问题 - 移除overflow: hidden */
+    /* overflow: hidden; */
+}
+
+.neon-gradient-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(24, 144, 255, 0.1), 
+        transparent);
+    animation: rotate 8s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 渐变背景效果 */
+header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    position: relative;
+    /* 修复触摸屏点击问题 - 移除overflow: hidden */
+    /* overflow: hidden; */
+}
+
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* 输入框聚焦增强效果 - 移动设备上禁用动画 */
+.form-group input:focus {
+    box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.1);
+    border-color: var(--primary-color);
+}
+
+/* 只在非移动设备上应用输入框聚焦动画 */
+@media (min-width: 768px) {
+    .form-group input:focus {
+        animation: inputFocus 0.3s ease;
+    }
+}
+
+@keyframes inputFocus {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.01); }
+    100% { transform: scale(1); }
+}
+
+/* 表格行悬停动画 - 移动设备上禁用 */
+.results-table tr {
+    /* 移除过渡效果 */
+    transition: none;
+}
+
+/* 移除所有表格行悬停动画 */
+@media (min-width: 768px) {
+    .results-table tr:hover {
+        /* 移除所有悬停效果 */
+        background-color: transparent;
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+/* 移动设备上也移除悬停效果 */
+@media (max-width: 767px) {
+    .results-table tr:hover {
+        /* 移除所有悬停效果 */
+        background-color: transparent;
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+/* 下载链接增强效果 - 移动设备上禁用动画 */
+.download-link {
+    position: relative;
+    font-weight: 500;
+    color: var(--primary-color);
+    /* 移除过渡效果 */
+    transition: none;
+}
+
+.download-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    /* 移除过渡效果 */
+    transition: none;
+}
+
+/* 移除所有Hover效果 */
+.download-link:hover {
+    /* 移除所有Hover效果 */
+    color: var(--primary-color);
+    transform: none;
+}
+
+.download-link:hover::after {
+    /* 移除所有Hover效果 */
+    width: 0;
+    background-color: var(--primary-color);
+}
+
+/* 加载动画增强 */
+.loading-spinner {
+    border-width: 4px;
+    border-color: #f3f3f3 #e0e0e0 #d0d0d0 var(--primary-color);
+    animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* 错误消息动画 */
+.results-error {
+    animation: slideDown 0.3s ease-out;
+    background: linear-gradient(135deg, #fff2f0, #fff1f0);
+    border: 1px solid #ffccc7;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #ff4d4f;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 淡入效果 */
+.results-section {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 滚动进度条 */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    z-index: 1000;
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+/* 悬浮元素效果 */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* 结果表格标题装饰 */
+.results-section h2 {
+    position: relative;
+    display: inline-block;
+}
+
+.results-section h2::after {
+    /* 移除渐变色横线 */
+    display: none;
+}
+
+/* 增强的表单元素样式 - 移动设备上禁用过渡效果 */
+.form-group input {
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 2px solid #e0e6ed;
+    font-size: 16px;
+}
+
+/* 只在非移动设备上应用输入框过渡效果 */
+@media (min-width: 768px) {
+    .form-group input {
+        transition: var(--transition);
+    }
+    
+    .form-group input:hover {
+        border-color: var(--primary-color);
+    }
+}
+
+/* 按钮增强样式 - 移动设备上禁用动画 */
+.submit-button {
+    position: relative;
+    /* 修复触摸屏点击问题 - 移除overflow: hidden */
+    /* overflow: hidden; */
+}
+
+.submit-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+/* 只在非移动设备上应用按钮悬停动画 */
+@media (min-width: 768px) {
+    .submit-button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .aurora-text {
+        font-size: 1.8rem !important;
+    }
+    
+    .shimmer-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}

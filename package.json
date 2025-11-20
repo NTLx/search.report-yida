@@ -1,0 +1,22 @@
+{
+  "name": "report-query-system",
+  "version": "1.0.0",
+  "description": "报告查询系统 - 通过姓名和手机号查询报告并提供下载功能",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.9.0",
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": "^16.0.0 || ^18.0.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

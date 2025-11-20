@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta name="wpk-bid" content="dta_1_4111634186"> <script>var isDingtalk = navigator && /DingTalk/.test(navigator.userAgent);var isProductEnv = window &&window.location &&window.location.host 
+        && window.location.host.indexOf('127.0.0.1')===-1
+        && window.location.host.indexOf('localhost')===-1
+        && window.location.host.indexOf('192.168.')===-1
+        // 如果有其它测试域名，请一起排掉，减少测试环境对生产环境监控的干扰
+    if (isProductEnv) {    !(function(c,i,e,b){var h=i.createElement("script");var f=i.getElementsByTagName("script")[0];h.type="text/javascript";h.crossorigin=true;h.onload=function(){c[b]||(c[b]=new c.wpkReporter({bid:"dta_1_4111634186"}));c[b].installAll()};f.parentNode.insertBefore(h,f);h.src=e})(window,document,"https://g.alicdn.com/woodpeckerx/jssdk??wpkReporter.js","__wpk"); }</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="报告查询系统 - 快速查询您的报告">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>报告查询</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="magic-styles.css">
+    <style>
+        * {
+            margin: 0;
+                       padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #f8f9fa;
+            min-height: 100vh;
+            background-color: #1a2332;
+            position: relative;
+            /* 修复触摸屏点击问题 - 移除overflow-x: hidden */
+            /* overflow-x: hidden; */
+        }
+        
+        /* 背景网格效果 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+            opacity: 0.3;
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 30px 30px; }
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            position: relative;
+            /* 修复触摸屏点击问题 - 移除overflow: hidden */
+            /* overflow: hidden; */
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            pointer-events: none;
+        }
+        
+        /* Aurora文本效果 */
+        .header h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 
+                         0 0 20px rgba(102, 126, 234, 0.5),
+                         0 0 30px rgba(118, 75, 162, 0.5);
+            background: linear-gradient(90deg, #ffffff, #f0f0ff, #ffffff);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: aurora 3s ease-in-out infinite;
+        }
+        
+        @keyframes aurora {
+            0% { background-position: 0% center; }
+            50% { background-position: 200% center; }
+            100% { background-position: 0% center; }
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 优化后的表单样式 */
+        .search-form {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(15px);
+            padding: 45px;
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.25),
+                0 1px 3px rgba(255, 255, 255, 0.1) inset;
+            margin-bottom: 35px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            /* 修复触摸屏点击问题 - 移除overflow: hidden */
+            /* overflow: hidden; */
+            /* 修复触摸屏点击问题 - 确保输入框可以正常点击 */
+            pointer-events: auto;
+            z-index: 2;
+        }
+        
+        /* 增强表单的质感 */
+        .search-form::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            pointer-events: none;
+        }
+        
+        /* 优化表单内部元素的间距 */
+        .search-form .form-group:last-child {
+            margin-bottom: 35px;
+        }
+        
+        .search-form form {
+            position: relative;
+            z-index: 1;
+            /* 修复触摸屏点击问题 - 确保输入框可以正常点击 */
+            pointer-events: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 28px;
+            position: relative;
+            /* 修复触摸屏点击问题 - 确保输入框可以正常点击 */
+            pointer-events: auto;
+            z-index: 5;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 500;
+            color: #e2e8f0;
+            font-size: 15px;
+            text-transform: none;
+            letter-spacing: 0.3px;
+            /* 完全禁用所有变换和动画 */
+            transition: none !important;
+            transform: none !important;
+            animation: none !important;
+            /* 确保标签不会移动 */
+            position: static !important;
+            top: auto !important;
+            left: auto !important;
+            z-index: 1 !important;
+        }
+        
+        .form-group label span {
+            margin-left: 5px;
+            color: #ff6b6b;
+            font-weight: 700;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 18px 24px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8f9fa;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            min-height: 58px;
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.15),
+                0 1px 2px rgba(255, 255, 255, 0.05) inset;
+            position: relative;
+            /* 修复触摸屏点击问题 - 确保输入框可以正常点击 */
+            pointer-events: auto;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            z-index: 10;
+        }
+        
+        .form-group input::placeholder {
+            color: rgba(248, 249, 250, 0.5);
+            font-style: italic;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 
+                        0 8px 24px rgba(0, 0, 0, 0.15),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-group input:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-group input.error {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.08);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.3s ease-in-out;
+            padding: 8px 12px;
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 3px solid #ff6b6b;
+            border-radius: 0 6px 6px 0;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        
+        .error-message::before {
+            content: '⚠';
+            margin-right: 6px;
+            font-size: 16px;
+        }
+        
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-5px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        /* Shimmer Button 效果 */
+        .submit-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            /* 修复触摸屏点击问题 - 移除overflow: hidden */
+            /* overflow: hidden; */
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            min-height: 56px;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .submit-button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+        
+        .submit-button:hover:not(:disabled) {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+            transform: translateY(-2px);
+        }
+        
+        .submit-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .submit-button:disabled {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        /* 结果区域样式 */
+        .results-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+            backdrop-filter: blur(10px);
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: none;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            animation: blurFadeIn 0.6s ease-out;
+        }
+        
+        @keyframes blurFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+                filter: blur(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            color: #ffffff;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            /* 移除渐变色横线 */
+            display: none;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            display: table;
+            table-layout: fixed;
+        }
+        
+        .results-table th,
+        .results-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 下载按钮列居中 */
+        .results-table td:last-child {
+            text-align: center;
+        }
+        
+        .results-table th {
+            background-color: rgba(102, 126, 234, 0.2);
+            font-weight: 600;
+            color: #ffffff;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        
+        /* 设置表格列宽 */
+        .results-table th:nth-child(1),
+        .results-table td:nth-child(1) {
+            width: 50%;
+        }
+        
+        .results-table th:nth-child(2),
+        .results-table td:nth-child(2) {
+            width: 25%;
+        }
+        
+        .results-table th:nth-child(3),
+        .results-table td:nth-child(3) {
+            width: 25%;
+        }
+        
+        .results-table tr {
+            cursor: pointer;
+        }
+        
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Ripple Button 效果 */
+        .download-link.cool-mode {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            /* 移除过渡效果 */
+            transition: none;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .download-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            /* 移除过渡效果 */
+            transition: none;
+        }
+        
+        /* 移除Hover效果 */
+        .download-link:hover {
+            /* 移除所有Hover效果 */
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .download-link:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px 20px;
+            color: #e2e8f0;
+            font-size: 16px;
+        }
+        
+        .no-results p {
+            opacity: 0.7;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        /* Enhanced Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 3px solid transparent;
+            border-top-color: #764ba2;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite reverse;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading p {
+            color: #f8f9fa;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .error-message-box {
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid rgba(255, 107, 107, 0.4);
+            color: #ff6b6b;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                max-width: 100%;
+            }
+            
+            .header {
+                padding: 30px 15px;
+                border-radius: 12px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+                line-height: 1.2;
+            }
+            
+            .search-form,
+            .results-section {
+                padding: 35px 25px;
+                border-radius: 18px;
+            }
+            
+            .search-form .form-group:last-child {
+                margin-bottom: 30px;
+            }
+            
+            .form-group {
+                margin-bottom: 24px;
+            }
+            
+            .form-group label {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            
+            .form-group input {
+                padding: 16px 20px;
+                min-height: 54px;
+                border-radius: 14px;
+                font-size: 16px; /* 防止iOS缩放 */
+            }
+            
+            .error-message {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+            
+            .results-table {
+                font-size: 14px;
+            }
+            
+            .results-table th,
+            .results-table td {
+                padding: 12px 15px;
+                min-width: 100px;
+                text-align: center;
+            }
+            
+            /* 下载按钮列居中 */
+            .results-table td:last-child {
+                text-align: center;
+            }
+            
+            .submit-button {
+                padding: 14px;
+                font-size: 16px;
+                min-height: 52px;
+                border-radius: 14px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .search-form,
+            .results-section {
+                padding: 30px 20px;
+                border-radius: 16px;
+            }
+            
+            .form-group input {
+                padding: 14px 18px;
+                min-height: 50px;
+                border-radius: 12px;
+            }
+            
+            .form-group label {
+                font-size: 13px;
+            }
+            
+            .error-message {
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 12px;
+            }
+            
+            .header {
+                padding: 25px 12px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header p {
+                font-size: 1em;
+            }
+            
+            .search-form,
+            .results-section {
+                padding: 25px 16px;
+                border-radius: 14px;
+            }
+            
+            .search-form .form-group:last-child {
+                margin-bottom: 25px;
+            }
+            
+            .form-group {
+                margin-bottom: 20px;
+            }
+            
+            .form-group label {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+            
+            .form-group input {
+                padding: 14px 16px;
+                min-height: 48px;
+                border-radius: 12px;
+                font-size: 16px; /* 防止iOS缩放 */
+            }
+            
+            .error-message {
+                font-size: 12px;
+                padding: 5px 8px;
+            }
+            
+            .results-table {
+                font-size: 12px;
+            }
+            
+            .results-table th,
+            .results-table td {
+                padding: 8px 10px;
+                text-align: center;
+            }
+            
+            /* 下载按钮列居中 */
+            .results-table td:last-child {
+                text-align: center;
+            }
+            
+            .download-link {
+                padding: 6px 12px;
+                font-size: 13px;
+                min-width: 70px;
+            }
+            
+            .results-table th:nth-child(2) {
+                min-width: 80px;
+            }
+            
+            .submit-button {
+                min-height: 50px;
+                font-size: 15px;
+                border-radius: 12px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .search-form,
+            .results-section {
+                padding: 20px 14px;
+                border-radius: 12px;
+            }
+            
+            .search-form .form-group:last-child {
+                margin-bottom: 20px;
+            }
+            
+
+            
+            .form-group input {
+                font-size: 15px;
+                padding: 12px 14px;
+                min-height: 46px;
+                border-radius: 10px;
+            }
+            
+            .form-group label {
+                font-size: 12px;
+            }
+            
+            .error-message {
+                font-size: 11px;
+                padding: 4px 6px;
+            }
+            
+            .submit-button {
+                min-height: 46px;
+                font-size: 14px;
+                border-radius: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>报告查询</h1>
+            <p>输入姓名和手机号查询您的报告</p>
+        </header>
+        
+        <main style="pointer-events: auto; touch-action: manipulation;">
+        <section class="search-form">
+            <form id="query-form" novalidate>
+                    <div class="form-group">
+                        <label for="name">姓名 <span>*</span></label>
+                        <input type="text" id="name" placeholder="请输入您的姓名" required aria-required="true" style="pointer-events: auto !important; touch-action: manipulation !important; z-index: 10 !important;">
+                        <div class="error-message" id="name-error" role="alert">请输入有效的姓名</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">手机号 <span>*</span></label>
+                        <input type="text" id="phone" placeholder="请输入您的手机号" required aria-required="true" style="pointer-events: auto !important; touch-action: manipulation !important; z-index: 10 !important;">
+                        <div class="error-message" id="phone-error" role="alert">请输入有效的手机号</div>
+                    </div>
+                    
+                    <button type="submit" id="submit-button" class="submit-button shimmer-button ripple" disabled aria-disabled="true">查询</button>
+                </form>
+            </section>
+            
+            <div class="loading" id="loading" role="status" aria-live="polite">
+                <div class="loading-spinner" aria-hidden="true"></div>
+                <p>正在查询报告，请稍候...</p>
+            </div>
+            
+            <section class="results-section" id="results-section" aria-live="polite">
+                <h2 class="section-title aurora-text">查询结果</h2>
+                <div class="error-message-box" id="results-error" role="alert"></div>
+                
+                <div class="table-wrapper">
+                    <table class="results-table" id="results-table">
+                        <thead>
+                            <tr>
+                                <th>报告文件名</th>
+                                <th>创建日期</th>
+                                <th>下载链接</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body">
+                            <!-- 结果将通过JavaScript动态插入 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="no-results" id="no-results">
+                    <p>未找到相关报告</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- 滚动进度条 -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+    
+    <!-- 加载主要业务逻辑脚本 -->
+    <script src="script.js"></script>
+    
+    <!-- 滚动进度条脚本 -->
+    <script>
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+        });
+    </script>
+</body>
+</html>

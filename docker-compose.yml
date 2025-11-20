@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  report-yida:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # 环境变量配置，可通过环境变量覆盖或在.env文件中配置
+      - USERID=${USERID}
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - APP_TYPE=${APP_TYPE}
+      - SYSTEM_TOKEN=${SYSTEM_TOKEN}
+      - FORM_UUID=${FORM_UUID}
+      - TIMEOUT=${TIMEOUT:-86400000}
+      - NAME_FIELD_ID=${NAME_FIELD_ID}
+      - PHONE_FIELD_ID=${PHONE_FIELD_ID}
+      - ATTACHMENT_FIELD_ID=${ATTACHMENT_FIELD_ID}
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${PORT:-8080}
+    volumes:
+      # 可选：挂载.env文件
+      # - ./env:/app/.env
+    restart: unless-stopped
