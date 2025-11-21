@@ -1,9 +1,9 @@
 services:
   search.report-yida:
     image: registry.cn-shanghai.aliyuncs.com/dev_env_tools/search.report-yida
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:  # 可选配置项：当预构建镜像不可用时，自动从本地Dockerfile构建
+    #   context: .
+    #   dockerfile: Dockerfile
     ports:
       - "3000:3000"
       - "3001:3001"
@@ -21,9 +21,9 @@ services:
       - ATTACHMENT_FIELD_ID=${ATTACHMENT_FIELD_ID}
       - NODE_ENV=${NODE_ENV:-production}
       - PORT=${PORT:-3001}
-    volumes:
-      # 可选：挂载.env文件
-      # - ./env:/app/.env
+    # volumes:  # 可选配置项：用于挂载本地文件或目录到容器内
+    #   # 示例：挂载.env文件到容器内
+    #   # - ./.env:/app/.env
     restart: unless-stopped
     logging:
       driver: "json-file"
