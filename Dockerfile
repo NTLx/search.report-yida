@@ -16,13 +16,9 @@ COPY . .
 # 构建Next.js应用
 RUN npm run build
 
-# 创建启动脚本
-RUN echo '#!/bin/sh\n# 启动后端服务器\nnode server.js &\n# 启动前端服务器\nnpm start' > /app/start.sh && \
-    chmod +x /app/start.sh
-
 # 暴露端口
 EXPOSE 3000
 EXPOSE 3001
 
-# 启动命令
-CMD ["/app/start.sh"]
+# 启动命令 - 同时启动后端和前端服务
+CMD sh -c "node server.js & npm start"
