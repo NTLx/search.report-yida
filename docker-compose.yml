@@ -1,6 +1,9 @@
 services:
   search.report-yida:
-    build: .
+    image: registry.cn-shanghai.aliyuncs.com/dev_env_tools/search.report-yida
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
       - "3001:3001"
