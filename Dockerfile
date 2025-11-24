@@ -14,4 +14,4 @@ RUN npm install --legacy-peer-deps
 EXPOSE 8080
 
 # 启动命令
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
