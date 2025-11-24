@@ -213,7 +213,11 @@ async function getFormInstanceIds(accessToken, queryParams) {
     // 构建搜索字段JSON，根据示例文档格式
     let searchFieldJson = {};
     
-    if (searchType === 'name' && searchValue) {
+    if (searchType === 'nameAndPhone' && searchValue) {
+      // 同时使用姓名和手机号进行查询
+      searchFieldJson[NAME_FIELD_ID] = searchValue.name;
+      searchFieldJson[PHONE_FIELD_ID] = searchValue.phone;
+    } else if (searchType === 'name' && searchValue) {
       searchFieldJson[NAME_FIELD_ID] = searchValue;
     } else if (searchType === 'phone' && searchValue) {
       searchFieldJson[PHONE_FIELD_ID] = searchValue;

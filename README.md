@@ -26,6 +26,7 @@
 - **缓存优化** - 内置缓存机制减少API调用次数
 - **容器化部署** - 支持Docker和Docker Compose部署
 - **API限流** - 防止恶意请求保护系统稳定性
+- **WebHook通知** - 实时查询事件通知，便于系统集成和监控
 
 ## 🚀 快速开始
 
@@ -106,6 +107,7 @@ docker run -d -p 8080:8080 --env-file .env --name report-yida report-yida
 | `ATTACHMENT_FIELD_ID` | 是 | 附件字段 ID |
 | `PORT` | 否 | 服务端口（默认 8080） |
 | `NODE_ENV` | 否 | 运行环境（默认 production） |
+| `WEBHOOK_URL` | 否 | WebHook通知URL，留空则不启用 |
 
 ### 宜搭表单要求
 
@@ -116,6 +118,128 @@ docker run -d -p 8080:8080 --env-file .env --name report-yida report-yida
 3. **附件** - 附件组件，用于存储报告文件
 
 ## 📖 API 文档
+
+### WebHook事件通知
+
+系统支持WebHook功能，可在查询事件发生时向指定URL发送实时通知。
+
+#### 配置方法
+
+在`.env`文件中设置`WEBHOOK_URL`环境变量：
+
+```env
+WEBHOOK_URL=https://your-webhook-endpoint.com/api/events
+```
+
+#### 事件类型
+
+系统会发送以下类型的查询事件：
+
+1. **查询开始** (`query_start`)
+2. **查询完成** (`query_complete`)
+3. **查询失败** (`query_failed`)
+4. **无结果** (`query_no_results`)
+
+#### WebHook数据格式
+
+**查询开始事件示例**:
+```json
+{
+  "metadata": {
+    "phase": "query_start"
+  },
+  "system": {
+    "environment": "production",
+    "source": "Report-YiDa",
+    "version": "1.0.0"
+  },
+  "messageType": "search",
+  "resultSummary": {},
+  "parameters": {
+    "fromDate": "1704067200000",
+    "searchType": "nameAndPhone",
+    "phone": "13800138000",
+    "toDate": "1735689599999",
+    "name": "张三",
+    "pageSize": 100,
+    "currentPage": 1
+  },
+  "queryId": "query_1704067200000_a1b2c3d4",
+  "timestamp": "1704067200000",
+  "status": "started"
+}
+```
+
+**查询完成事件示例**:
+```json
+{
+  "metadata": {
+    "phase": "query_complete",
+    "processingTime": 1054
+  },
+  "system": {
+    "environment": "production",
+    "source": "Report-YiDa",
+    "version": "1.0.0"
+  },
+  "messageType": "search",
+  "resultSummary": {
+    "resultCount": 4,
+    "totalCount": 2,
+    "validCount": 4,
+    "errorCount": 0,
+    "processingTime": 1054
+  },
+  "parameters": {
+    "fromDate": "1704067200000",
+    "searchType": "nameAndPhone",
+    "phone": "13800138000",
+    "toDate": "1735689599999",
+    "name": "张三",
+    "pageSize": 100,
+    "currentPage": 1
+  },
+  "queryId": "query_1704067200000_a1b2c3d4",
+  "timestamp": "1704067201054",
+  "status": "success"
+}
+```
+
+#### 字段说明
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| metadata | object | 元数据，包含事件阶段和处理时间等信息 |
+| metadata.phase | string | 事件阶段，如"query_start"、"query_complete"等 |
+| metadata.processingTime | number | 处理时间（毫秒），仅在查询完成事件中存在 |
+| system | object | 系统信息 |
+| system.environment | string | 运行环境，如"production" |
+| system.source | string | 系统来源，固定为"Report-YiDa" |
+| system.version | string | 系统版本号 |
+| messageType | string | 消息类型，固定为"search" |
+| resultSummary | object | 查询结果摘要 |
+| resultSummary.resultCount | number | 结果数量 |
+| resultSummary.totalCount | number | 总数量 |
+| resultSummary.validCount | number | 有效结果数量 |
+| resultSummary.errorCount | number | 错误数量 |
+| resultSummary.processingTime | number | 处理时间（毫秒） |
+| parameters | object | 查询参数 |
+| parameters.fromDate | string | 开始日期时间戳 |
+| parameters.searchType | string | 搜索类型，如"nameAndPhone" |
+| parameters.phone | string | 查询的手机号 |
+| parameters.toDate | string | 结束日期时间戳 |
+| parameters.name | string | 查询的姓名 |
+| parameters.pageSize | number | 每页大小 |
+| parameters.currentPage | number | 当前页码 |
+| queryId | string | 查询的唯一标识符 |
+| timestamp | string | 事件发生的时间戳（毫秒） |
+| status | string | 查询状态，如"started"、"success"等 |
+
+#### 安全注意事项
+
+- WebHook URL应使用HTTPS协议
+- 建议对接收的WebHook请求进行签名验证
+- 避免在WebHook URL中包含敏感信息
 
 ### 查询报告
 
@@ -178,8 +302,7 @@ docker run -d -p 8080:8080 --env-file .env --name report-yida report-yida
 ```
 Report-YiDa/
 ├── app/                   # 应用代码
-│   ├── api/               # API路由
-│   └── test/              # 测试文件
+│   └── api/               # API路由
 ├── public/                # 前端静态文件
 │   ├── index.html         # 主页面
 │   ├── styles.css         # 样式文件
@@ -187,6 +310,7 @@ Report-YiDa/
 │   └── script.js          # 前端脚本
 ├── services/              # 服务层
 │   ├── cacheService.js    # 缓存服务
+│   ├── webhookService.js  # WebHook通知服务
 │   └── yidaService.js     # 宜搭API服务
 ├── .env.example           # 环境变量示例
 ├── docker-compose.yml     # Docker Compose配置
