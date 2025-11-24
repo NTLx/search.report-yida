@@ -126,8 +126,8 @@ docker run -d -p 8080:8080 --env-file .env --name report-yida report-yida
 {
   "name": "张三",
   "phone": "13800138000",
-  "fromDate": "2023-01-01",  // 可选
-  "toDate": "2023-12-31",    // 可选
+  "fromDate": "2025-01-01",  // 可选
+  "toDate": "2025-12-31",    // 可选
   "pageSize": 100,           // 可选，默认100
   "currentPage": 1           // 可选，默认1
 }
@@ -141,7 +141,7 @@ docker run -d -p 8080:8080 --env-file .env --name report-yida report-yida
     {
       "fileName": "体检报告.pdf",
       "downloadUrl": "https://...",
-      "createTime": "2023-06-15T10:30:00Z",
+      "createTime": "2025-11-24T10:30:00Z",
       "formInstanceId": "instance_id",
       "error": null
     }
@@ -169,7 +169,7 @@ docker run -d -p 8080:8080 --env-file .env --name report-yida report-yida
 ```json
 {
   "status": "ok",
-  "timestamp": "2023-06-15T10:30:00.000Z"
+  "timestamp": "2025-11-24T10:30:00.000Z"
 }
 ```
 
@@ -235,7 +235,7 @@ npm start
 
 ## 📝 更新日志
 
-### v1.0.0 (2023-06-15)
+### v1.0.0 (2025-11-24)
 
 - 初始版本发布
 - 实现基本的报告查询功能

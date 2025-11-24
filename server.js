@@ -9,8 +9,16 @@ dotenv.config();
 // 调试环境变量加载
 console.log('环境变量加载检查:');
 console.log('CLIENT_ID:', process.env.CLIENT_ID);
+console.log('CLIENT_SECRET:', process.env.CLIENT_SECRET ? '***已设置***' : '未设置');
 console.log('APP_TYPE:', process.env.APP_TYPE);
 console.log('FORM_UUID:', process.env.FORM_UUID);
+console.log('SYSTEM_TOKEN:', process.env.SYSTEM_TOKEN ? '***已设置***' : '未设置');
+console.log('NAME_FIELD_ID:', process.env.NAME_FIELD_ID);
+console.log('PHONE_FIELD_ID:', process.env.PHONE_FIELD_ID);
+console.log('ATTACHMENT_FIELD_ID:', process.env.ATTACHMENT_FIELD_ID);
+console.log('TIMEOUT:', process.env.TIMEOUT || '86400000 (默认)');
+console.log('PORT:', process.env.PORT || '8080 (默认)');
+console.log('NODE_ENV:', process.env.NODE_ENV || 'production (默认)');
 
 // 然后导入yidaService模块
 const { getAccessToken, queryReportData, getAttachmentUrl } = require('./services/yidaService');
@@ -140,9 +148,17 @@ app.get('/health', (req, res) => {
 });
 
 // 启动服务器
+const startTime = new Date();
 app.listen(port, () => {
-  console.log(`服务器运行在 http://localhost:${port}`);
+  console.log('='.repeat(50));
+  console.log('Report-YiDa 报告查询服务已启动');
+  console.log('='.repeat(50));
+  console.log(`服务器地址: http://localhost:${port}`);
   console.log(`健康检查: http://localhost:${port}/health`);
+  console.log(`API端点: http://localhost:${port}/api/query-reports`);
+  console.log(`启动时间: ${startTime.toLocaleString()}`);
+  console.log(`运行环境: ${process.env.NODE_ENV || 'production'}`);
+  console.log('='.repeat(50));
 });
 
 // 错误处理中间件

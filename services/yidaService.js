@@ -14,15 +14,6 @@ const NAME_FIELD_ID = process.env.NAME_FIELD_ID;
 const PHONE_FIELD_ID = process.env.PHONE_FIELD_ID;
 const ATTACHMENT_FIELD_ID = process.env.ATTACHMENT_FIELD_ID;
 
-// 调试输出环境变量
-console.log('环境变量检查:');
-console.log('CLIENT_ID:', CLIENT_ID);
-console.log('CLIENT_SECRET:', CLIENT_SECRET ? '已设置' : '未设置');
-console.log('APP_TYPE:', APP_TYPE);
-console.log('FORM_UUID:', FORM_UUID);
-console.log('NAME_FIELD_ID:', NAME_FIELD_ID);
-console.log('PHONE_FIELD_ID:', PHONE_FIELD_ID);
-
 // 缓存键
 const ACCESS_TOKEN_KEY = 'dingtalk_access_token';
 const ACCESS_TOKEN_TTL = 7200 * 1000; // accessToken有效期，通常为2小时
