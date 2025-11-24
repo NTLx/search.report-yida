@@ -10,9 +10,9 @@ const SYSTEM_TOKEN = process.env.SYSTEM_TOKEN;
 const FORM_UUID = process.env.FORM_UUID;
 const USERID = process.env.USERID;
 const TIMEOUT = process.env.TIMEOUT || 86400000; // 默认24小时
-const NAME_FIELD_ID = process.env.NAME_FIELD_ID || "textField_lgsqj5qy";
-const PHONE_FIELD_ID = process.env.PHONE_FIELD_ID || "textField_lgsqj5qz";
-const ATTACHMENT_FIELD_ID = process.env.ATTACHMENT_FIELD_ID || "attachmentField_lgsqj5r0";
+const NAME_FIELD_ID = process.env.NAME_FIELD_ID;
+const PHONE_FIELD_ID = process.env.PHONE_FIELD_ID;
+const ATTACHMENT_FIELD_ID = process.env.ATTACHMENT_FIELD_ID;
 
 // 调试输出环境变量
 console.log('环境变量检查:');
