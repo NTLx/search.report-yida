@@ -30,6 +30,8 @@
             min-height: 100vh;
             background-color: #1a2332;
             position: relative;
+            width: 100%;
+            overflow-x: hidden; /* 防止页面本身水平滚动 */
             /* 修复触摸屏点击问题 - 移除overflow-x: hidden */
             /* overflow-x: hidden; */
         }
@@ -604,13 +606,17 @@
             
             .results-table {
                 font-size: 14px;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
             }
             
             .results-table th,
             .results-table td {
                 padding: 12px 15px;
-                min-width: 100px;
                 text-align: center;
+                min-width: 120px;
             }
             
             /* 下载按钮列居中 */
@@ -702,12 +708,17 @@
             
             .results-table {
                 font-size: 12px;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
             }
             
             .results-table th,
             .results-table td {
                 padding: 8px 10px;
                 text-align: center;
+                min-width: 100px;
             }
             
             /* 下载按钮列居中 */
@@ -808,8 +819,8 @@
                 <h2 class="section-title aurora-text">查询结果</h2>
                 <div class="error-message-box" id="results-error" role="alert"></div>
                 
-                <div class="table-wrapper">
-                    <table class="results-table" id="results-table">
+                <div class="table-wrapper" style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
+                    <table class="results-table" id="results-table" style="min-width: 100%;">
                         <thead>
                             <tr>
                                 <th>报告文件名</th>

@@ -34,6 +34,8 @@ body {
     min-height: 100vh;
     background-color: #1a2332;
     position: relative;
+    width: 100%;
+    overflow-x: hidden; /* 防止页面本身水平滚动 */
     /* 修复触摸屏点击问题 - 移除overflow-x: hidden */
     /* overflow-x: hidden; */
 }
@@ -565,8 +567,17 @@ main {
     10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
     20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
-    border-top-color: #1890ff;
-    animation: spin 1s ease-in-out infinite;
+
+.loading-spinner::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 3px solid transparent;
+    border-top-color: #764ba2;
+    animation: spin 1.5s linear infinite reverse;
 }
 
 @keyframes spin {
@@ -607,6 +618,13 @@ main {
 }
 
 /* 表格样式 */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+}
+
 .results-table {
     width: 100%;
     border-collapse: collapse;
@@ -618,6 +636,7 @@ main {
     display: table;
     table-layout: fixed;
     font-size: 14px;
+    min-width: 600px; /* 确保表格有最小宽度，在小屏幕上可以水平滚动 */
 }
 
 .results-table th,
@@ -843,6 +862,8 @@ footer {
     
     .container {
         padding: var(--spacing-sm);
+        width: 100%;
+        overflow-x: hidden; /* 防止容器本身水平滚动 */
     }
     
     header {
@@ -858,11 +879,40 @@ footer {
         padding: var(--spacing-md);
         margin: var(--spacing-md) 0;
         border-radius: 8px;
+        width: 100%;
+        overflow-x: hidden; /* 防止主内容区域水平滚动 */
+    }
+    
+    /* 确保section元素不会出现独立滚动条 */
+    .search-form,
+    .results-section {
+        overflow: visible !important;
+        max-height: none !important;
     }
     
     /* 表格适配手机屏幕 */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        /* 居中表格容器 */
+        margin: 0 auto;
+        padding: 0;
+        /* 确保表格容器不会影响整个页面的滚动 */
+        max-height: none !important;
+        /* 设置容器宽度为100% */
+        width: 100%;
+    }
+    
     .results-table {
         font-size: 0.875rem;
+        /* 减小最小宽度，适应小屏幕 */
+        min-width: 320px;
+        /* 表格居中 */
+        margin: 0 auto;
+        /* 确保表格本身不会限制section的高度 */
+        max-height: none !important;
+        /* 设置表格宽度为100% */
+        width: 100%;
     }
     
     /* 下载链接在小屏幕上更醒目 */
@@ -880,6 +930,13 @@ footer {
         font-size: 1.5rem;
     }
     
+    /* 确保section元素不会出现独立滚动条 */
+    .search-form,
+    .results-section {
+        overflow: visible !important;
+        max-height: none !important;
+    }
+    
     /* 增加触摸区域大小 */
     .form-group input,
     .submit-button {
@@ -887,10 +944,27 @@ footer {
     }
     
     /* 简化表格布局 */
-    .results-table {
-        display: block;
+    .table-wrapper {
         overflow-x: auto;
-        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        /* 居中表格容器 */
+        margin: 0 auto;
+        padding: 0;
+        /* 设置容器宽度为100% */
+        width: 100%;
+        /* 确保表格容器不会影响整个页面的滚动 */
+        max-height: none !important;
+    }
+    
+    .results-table {
+        /* 减小最小宽度，适应小屏幕 */
+        min-width: 280px;
+        /* 表格居中 */
+        margin: 0 auto;
+        /* 确保表格本身不会限制section的高度 */
+        max-height: none !important;
+        /* 设置表格宽度为100% */
+        width: 100%;
     }
 }
 
