@@ -1,6 +1,6 @@
 {
   "name": "report-query-system",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "报告查询系统 - 通过姓名和手机号查询报告并提供下载功能",
   "main": "server.js",
   "scripts": {
@@ -16,6 +16,6 @@
   "engines": {
     "node": "^16.0.0 || ^18.0.0"
   },
-  "author": "",
+  "author": "NTLx <lx3325360@gmail.com>",
   "license": "MIT"
 }
