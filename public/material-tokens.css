@@ -1,19 +1,20 @@
 :root {
-  /* Color Palette - Blue Theme (More readable/trustworthy) */
-  /* Primary: Blue 500 #2196F3 */
-  --md-sys-color-primary: #2196F3;
+  /* Color Palette - Enhanced Blue Theme */
+  /* Primary: Blue 600 #1E88E5 - Slightly deeper for better white text contrast */
+  --md-sys-color-primary: #1E88E5;
   --md-sys-color-on-primary: #FFFFFF;
-  --md-sys-color-primary-container: #BBDEFB;
+  --md-sys-color-primary-container: #D1E4F6;
+  /* More distinct container */
   --md-sys-color-on-primary-container: #0D47A1;
 
-  /* Secondary: Teal 500 #009688 */
-  --md-sys-color-secondary: #009688;
+  /* Secondary: Teal 600 #00897B */
+  --md-sys-color-secondary: #00897B;
   --md-sys-color-on-secondary: #FFFFFF;
   --md-sys-color-secondary-container: #B2DFDB;
   --md-sys-color-on-secondary-container: #004D40;
 
-  /* Tertiary: Orange 500 #FF9800 */
-  --md-sys-color-tertiary: #FF9800;
+  /* Tertiary: Orange 600 #FB8C00 */
+  --md-sys-color-tertiary: #FB8C00;
   --md-sys-color-on-tertiary: #FFFFFF;
   --md-sys-color-tertiary-container: #FFE0B2;
   --md-sys-color-on-tertiary-container: #E65100;
@@ -23,25 +24,28 @@
   --md-sys-color-error-container: #F9DEDC;
   --md-sys-color-on-error-container: #410E0B;
 
-  /* Neutral / Background */
-  --md-sys-color-background: #F5F7FA;
-  /* Slightly cool grey for better readability */
-  --md-sys-color-on-background: #1C1B1F;
+  /* Neutral / Background - High Contrast */
+  --md-sys-color-background: #EEF2F6;
+  /* Cool grey, distinct from white surface */
+  --md-sys-color-on-background: #111111;
+  /* Almost pure black for max readability */
   --md-sys-color-surface: #FFFFFF;
-  --md-sys-color-on-surface: #1C1B1F;
+  --md-sys-color-on-surface: #111111;
 
-  --md-sys-color-surface-variant: #F0F4F8;
-  /* Lighter variant */
-  --md-sys-color-on-surface-variant: #454F5B;
-  /* Darker grey for text */
-  --md-sys-color-outline: #919EAB;
-  --md-sys-color-outline-variant: #C4CDD5;
+  --md-sys-color-surface-variant: #F5F7FA;
+  /* Very light grey for inputs */
+  --md-sys-color-on-surface-variant: #455A64;
+  /* Blue-grey for secondary text */
+  --md-sys-color-outline: #78909C;
+  /* Blue-grey outline */
+  --md-sys-color-outline-variant: #CFD8DC;
 
-  /* Elevation - Softer, more diffused shadows */
+  /* Elevation - Deep, Layered Shadows for "Pop" */
   --md-sys-elevation-0: 0px 0px 0px 0px rgba(0, 0, 0, 0);
-  --md-sys-elevation-1: 0px 2px 8px rgba(33, 150, 243, 0.08), 0px 1px 4px rgba(0, 0, 0, 0.04);
-  --md-sys-elevation-2: 0px 4px 16px rgba(33, 150, 243, 0.12), 0px 2px 8px rgba(0, 0, 0, 0.06);
-  --md-sys-elevation-3: 0px 8px 24px rgba(33, 150, 243, 0.16), 0px 4px 12px rgba(0, 0, 0, 0.08);
+  --md-sys-elevation-1: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.24);
+  --md-sys-elevation-2: 0px 3px 6px rgba(0, 0, 0, 0.15), 0px 2px 4px rgba(0, 0, 0, 0.12);
+  --md-sys-elevation-3: 0px 10px 20px rgba(0, 0, 0, 0.15), 0px 3px 6px rgba(0, 0, 0, 0.10);
+  --md-sys-elevation-4: 0px 15px 25px rgba(0, 0, 0, 0.15), 0px 5px 10px rgba(0, 0, 0, 0.05);
 
   /* Typography - Roboto */
   --md-sys-typescale-display-large-font: 'Roboto', sans-serif;
@@ -50,7 +54,8 @@
 
   --md-sys-typescale-headline-large-font: 'Roboto', sans-serif;
   --md-sys-typescale-headline-large-size: 32px;
-  --md-sys-typescale-headline-large-weight: 400;
+  --md-sys-typescale-headline-large-weight: 500;
+  /* Slightly bolder */
 
   --md-sys-typescale-body-large-font: 'Roboto', sans-serif;
   --md-sys-typescale-body-large-size: 16px;
@@ -63,54 +68,67 @@
   /* Shape */
   --md-sys-shape-corner-extra-small: 4px;
   --md-sys-shape-corner-small: 8px;
-  --md-sys-shape-corner-medium: 12px;
-  --md-sys-shape-corner-large: 16px;
-  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-medium: 16px;
+  /* Increased radius for friendlier look */
+  --md-sys-shape-corner-large: 24px;
+  --md-sys-shape-corner-extra-large: 32px;
   --md-sys-shape-corner-full: 9999px;
 
   /* State Layers (Opacity) */
   --md-sys-state-hover-state-layer-opacity: 0.08;
   --md-sys-state-focus-state-layer-opacity: 0.12;
   --md-sys-state-pressed-state-layer-opacity: 0.12;
+
+  /* Motion */
+  --md-sys-motion-duration-short: 200ms;
+  --md-sys-motion-duration-medium: 400ms;
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
 }
 
-/* Dark Theme Overrides - Optimized for readability */
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* High contrast primary for dark mode */
-    --md-sys-color-primary: #64B5F6;
-    --md-sys-color-on-primary: #003258;
-    --md-sys-color-primary-container: #1976D2;
-    --md-sys-color-on-primary-container: #E3F2FD;
+/* Dark Theme Overrides - High Contrast & Depth */
+[data-theme="dark"] {
+  /* Primary: Lighter Blue for dark bg */
+  --md-sys-color-primary: #64B5F6;
+  --md-sys-color-on-primary: #002545;
+  /* Darker text on primary */
+  --md-sys-color-primary-container: #1565C0;
+  --md-sys-color-on-primary-container: #FFFFFF;
 
-    --md-sys-color-secondary: #4DB6AC;
-    --md-sys-color-on-secondary: #004D40;
-    --md-sys-color-secondary-container: #00897B;
-    --md-sys-color-on-secondary-container: #E0F2F1;
+  --md-sys-color-secondary: #4DB6AC;
+  --md-sys-color-on-secondary: #003028;
+  --md-sys-color-secondary-container: #00695C;
+  --md-sys-color-on-secondary-container: #E0F2F1;
 
-    --md-sys-color-tertiary: #FFB74D;
-    --md-sys-color-on-tertiary: #E65100;
-    --md-sys-color-tertiary-container: #F57C00;
-    --md-sys-color-on-tertiary-container: #FFF3E0;
+  --md-sys-color-tertiary: #FFB74D;
+  --md-sys-color-on-tertiary: #4E2600;
+  --md-sys-color-tertiary-container: #EF6C00;
+  --md-sys-color-on-tertiary-container: #FFF3E0;
 
-    --md-sys-color-error: #F2B8B5;
-    --md-sys-color-on-error: #601410;
-    --md-sys-color-error-container: #8C1D18;
-    --md-sys-color-on-error-container: #F9DEDC;
+  --md-sys-color-error: #F2B8B5;
+  --md-sys-color-on-error: #601410;
+  --md-sys-color-error-container: #8C1D18;
+  --md-sys-color-on-error-container: #F9DEDC;
 
-    /* True Black / Dark Grey for OLED friendliness and depth */
-    --md-sys-color-background: #000000;
-    --md-sys-color-on-background: #FFFFFF;
+  /* Background: True Black */
+  --md-sys-color-background: #000000;
+  --md-sys-color-on-background: #FFFFFF;
 
-    /* Slightly lighter surface for cards to stand out */
-    --md-sys-color-surface: #121212;
-    --md-sys-color-on-surface: #FFFFFF;
+  /* Surface: Dark Grey to distinguish from black bg */
+  --md-sys-color-surface: #1C1C1E;
+  --md-sys-color-on-surface: #F5F5F5;
+  /* Off-white for comfort */
 
-    /* Distinct variant for inputs/secondary areas */
-    --md-sys-color-surface-variant: #2D2D2D;
-    --md-sys-color-on-surface-variant: #E0E0E0;
+  /* Surface Variant: Lighter grey for inputs */
+  --md-sys-color-surface-variant: #2C2C2E;
+  --md-sys-color-on-surface-variant: #E0E0E0;
 
-    --md-sys-color-outline: #A0A0A0;
-    --md-sys-color-outline-variant: #505050;
-  }
+  --md-sys-color-outline: #9E9E9E;
+  --md-sys-color-outline-variant: #484848;
+
+  /* Dark Mode Elevation - Using lighter overlays/borders instead of just shadow */
+  --md-sys-elevation-0: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+  /* Subtle white glow/border effect for depth in dark mode */
+  --md-sys-elevation-1: 0px 4px 10px rgba(0, 0, 0, 0.5), 0px 0px 0px 1px rgba(255, 255, 255, 0.05);
+  --md-sys-elevation-2: 0px 8px 20px rgba(0, 0, 0, 0.6), 0px 0px 0px 1px rgba(255, 255, 255, 0.1);
+  --md-sys-elevation-3: 0px 12px 30px rgba(0, 0, 0, 0.7), 0px 0px 0px 1px rgba(255, 255, 255, 0.1);
 }

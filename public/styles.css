@@ -23,12 +23,6 @@ body {
     background-color: var(--md-sys-color-surface);
 }
 
-.container {
-    max-width: 600px;
-    /* MD3 mobile-first/compact usually centers content */
-    margin: 0 auto;
-    padding: 24px 16px;
-}
 
 /* Typography */
 .md3-display-large {
@@ -58,6 +52,54 @@ body {
     text-align: center;
     margin-bottom: 48px;
     padding-top: 48px;
+    position: relative;
+    /* For positioning toggle button if needed, though it's absolute to container */
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+    z-index: 10;
+}
+
+/* GitHub Button */
+.github-btn {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+    z-index: 10;
+    text-decoration: none;
+    /* Remove underline for anchor */
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    position: relative;
+    /* Anchor for absolute toggle button */
 }
 
 /* Cards */
@@ -66,16 +108,50 @@ body {
     border-radius: var(--md-sys-shape-corner-medium);
     padding: 24px;
     margin-bottom: 24px;
-    /* Elevation 1 */
-    box-shadow: var(--md-sys-elevation-1);
+    /* Default: Flat (no shadow) */
+    box-shadow: var(--md-sys-elevation-0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid transparent;
+    /* Placeholder for potential border */
 }
 
 .search-card {
     background-color: var(--md-sys-color-surface-variant);
-    /* Slightly distinct background */
     border-radius: var(--md-sys-shape-corner-large);
-    box-shadow: none;
-    /* Flat on surface variant */
+    /* Flat by default */
+    box-shadow: var(--md-sys-elevation-0);
+}
+
+/* Hover: 3D / Elevated - Only on devices that support hover */
+@media (hover: hover) {
+    .md3-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--md-sys-elevation-3);
+        z-index: 1;
+    }
+
+    .md3-input:hover {
+        border-color: var(--md-sys-color-on-surface);
+    }
+
+    .md3-button--filled:hover:not(:disabled) {
+        box-shadow: var(--md-sys-elevation-1);
+    }
+
+    .md3-button:hover .md3-ripple {
+        opacity: var(--md-sys-state-hover-state-layer-opacity);
+    }
+
+    .theme-toggle-btn:hover,
+    .github-btn:hover {
+        background-color: var(--md-sys-color-surface-variant);
+        color: var(--md-sys-color-on-surface);
+    }
+
+    .download-link:hover {
+        background-color: var(--md-sys-color-secondary);
+        color: var(--md-sys-color-on-secondary);
+    }
 }
 
 /* Simplified MD3 Text Field */
@@ -97,10 +173,6 @@ body {
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     z-index: 1;
-}
-
-.md3-input:hover {
-    border-color: var(--md-sys-color-on-surface);
 }
 
 .md3-input:focus {
@@ -181,10 +253,11 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
+    height: 48px;
+    /* Increased to 48px for better touch target */
     padding: 0 24px;
-    border-radius: 20px;
-    /* Full rounded */
+    border-radius: 24px;
+    /* Adjusted radius */
     border: none;
     font-family: var(--md-sys-typescale-label-large-font);
     font-size: var(--md-sys-typescale-label-large-size);
@@ -199,10 +272,6 @@ body {
 .md3-button--filled {
     background-color: var(--md-sys-color-primary);
     color: var(--md-sys-color-on-primary);
-}
-
-.md3-button--filled:hover:not(:disabled) {
-    box-shadow: var(--md-sys-elevation-1);
 }
 
 .md3-button--filled:disabled {
@@ -223,10 +292,6 @@ body {
     opacity: 0;
     transition: opacity 0.2s;
     pointer-events: none;
-}
-
-.md3-button:hover .md3-ripple {
-    opacity: var(--md-sys-state-hover-state-layer-opacity);
 }
 
 .md3-button:active .md3-ripple {
@@ -273,7 +338,7 @@ body {
 }
 
 .md3-table th {
-    text-align: left;
+    text-align: center;
     padding: 12px 16px;
     color: var(--md-sys-color-on-surface-variant);
     font-weight: 500;
@@ -281,6 +346,7 @@ body {
 }
 
 .md3-table td {
+    text-align: center;
     padding: 12px 16px;
     color: var(--md-sys-color-on-surface);
     border-bottom: 1px solid var(--md-sys-color-outline-variant);
@@ -304,11 +370,6 @@ body {
     font-size: 12px;
     font-weight: 500;
     transition: background-color 0.2s;
-}
-
-.download-link:hover {
-    background-color: var(--md-sys-color-secondary);
-    color: var(--md-sys-color-on-secondary);
 }
 
 .download-error {
@@ -338,10 +399,135 @@ body {
     display: none;
 }
 
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Apply Animations */
+.container {
+    animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+
+.md3-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.results-section {
+    animation: scaleIn var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+
+/* Enhanced Input Focus */
+.md3-input:focus {
+    border-color: var(--md-sys-color-primary);
+    border-width: 2px;
+    padding: 0 15px;
+    box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
+    /* Subtle glow ring */
+}
+
 /* Responsive */
 @media (min-width: 600px) {
     .md3-button {
         width: auto;
         /* Inline on desktop */
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 16px;
+    }
+
+    .md3-display-large {
+        font-size: 32px;
+        /* Much smaller for mobile */
+        margin-bottom: 4px;
+    }
+
+    .md3-body-large {
+        font-size: 14px;
+    }
+
+    .header {
+        padding-top: 24px;
+        margin-bottom: 24px;
+    }
+
+    .md3-card {
+        padding: 16px;
+        /* Reduce padding */
+        margin-bottom: 16px;
+    }
+
+    .md3-table th,
+    .md3-table td {
+        padding: 8px 4px;
+        /* Tighter table cells */
+        font-size: 12px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Print Styles */
+@media print {
+
+    .header,
+    .search-card,
+    .md3-button,
+    .download-link {
+        display: none !important;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .md3-surface {
+        background-color: white;
+    }
+
+    .md3-card {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+    }
+
+    .results-section {
+        display: block !important;
+        margin-top: 0;
+    }
+
+    .md3-table th,
+    .md3-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        color: black;
     }
 }

@@ -6,7 +6,7 @@
 
 **A:** 本系统需要以下环境：
 
-1. **Node.js**: 版本 16.x 或 18.x（推荐使用 LTS 版本）
+1. **Node.js**: 版本 20.6.0 或更高（推荐使用 v20 LTS 或 v22 LTS）
 2. **npm**: 版本 7.x 或更高
 3. **操作系统**: Linux、macOS 或 Windows
 4. **内存**: 至少 512MB 可用内存
@@ -154,7 +154,6 @@ server {
    APP_TYPE=应用类型（通常是PAGE）
    SYSTEM_TOKEN=系统Token
    FORM_UUID=表单UUID
-   
    # 查询字段ID配置（需要根据实际表单配置）
    NAME_FIELD_ID=姓名字段ID
    PHONE_FIELD_ID=手机号字段ID
@@ -450,6 +449,17 @@ server {
    - 检查浏览器下载设置
    - 尝试使用其他下载方式
 
+### Q: 如何切换深色/浅色模式？
+
+**A:** 系统支持手动切换主题：
+1. 在页面右上角找到圆形的"月亮"（或"太阳"）图标按钮。
+2. 点击该按钮即可在深色和浅色模式之间切换。
+3. 系统默认会跟随您的操作系统主题设置。
+
+### Q: 哪里可以找到项目源代码？
+
+**A:** 您可以通过点击页面左上角的 GitHub 图标按钮，直接跳转到本项目的 GitHub 仓库查看源代码。
+
 ### Q: 如何批量查询多个报告？
 
 **A:** 当前系统主要支持单个查询，但可以通过以下方式实现批量查询：
@@ -568,8 +578,8 @@ server {
 
 2. **添加自定义CSS**：
    ```html
-   <!-- 在public/index.html的<head>中添加外部CSS -->
-   <link rel="stylesheet" href="/css/custom.css">
+   <!-- 在public/index.html的<head>中添加外部CSS文件使用短横线命名法 (e.g., `styles.css`) -->
+   <link rel="stylesheet" href="/css/styles.css">
    ```
 
 3. **响应式设计调整**：

@@ -4,10 +4,41 @@ class ReportQuerySystem {
     constructor() {
         // 初始化DOM元素引用
         this.initializeElements();
+        this.initializeThemeToggle();
         // 绑定事件监听器
         this.bindEvents();
         // 初始检查表单有效性
         this.checkFormValidity();
+    }
+
+    initializeThemeToggle() {
+        const toggleBtn = document.getElementById('theme-toggle');
+        const icon = toggleBtn.querySelector('.material-symbols-outlined');
+
+        // Update icon based on current theme
+        const updateIcon = () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            icon.textContent = currentTheme === 'dark' ? 'light_mode' : 'dark_mode';
+            toggleBtn.setAttribute('aria-label', currentTheme === 'dark' ? '切换到浅色模式' : '切换到深色模式');
+        };
+
+        // Initial icon state
+        updateIcon();
+
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            updateIcon();
+
+            // Add a subtle rotation animation to icon
+            icon.style.transition = 'transform 0.3s ease';
+            icon.style.transform = 'rotate(180deg)';
+            setTimeout(() => {
+                icon.style.transform = 'rotate(0deg)';
+            }, 300);
+        });
     }
 
     /**
@@ -48,7 +79,7 @@ class ReportQuerySystem {
             event.preventDefault();
             this.submitQuery();
         });
-        
+
         // 响应窗口大小变化
         window.addEventListener('resize', () => {
             this.handleResize();
@@ -108,7 +139,7 @@ class ReportQuerySystem {
     checkFormValidity() {
         const isNameValid = this.validateName(this.nameInput.value);
         const isPhoneValid = this.validatePhone(this.phoneInput.value);
-        
+
         this.submitButton.disabled = !(isNameValid && isPhoneValid);
     }
 
@@ -141,20 +172,20 @@ class ReportQuerySystem {
         // 隐藏之前的结果和错误
         this.resultsSection.style.display = 'none';
         this.resultsError.style.display = 'none';
-        
+
         // 显示加载状态
         this.loading.style.display = 'block';
-        
+
         try {
             // 构建请求数据
             const requestData = {
                 name: this.nameInput.value.trim(),
                 phone: this.phoneInput.value.trim()
             };
-            
+
             // 发送API请求
             const response = await this.queryReports(requestData);
-            
+
             // 处理响应
             this.handleQueryResponse(response);
         } catch (error) {
@@ -180,11 +211,11 @@ class ReportQuerySystem {
                 },
                 body: JSON.stringify(data)
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             return await response.json();
         } catch (error) {
             console.error('API请求失败:', error);
@@ -199,15 +230,15 @@ class ReportQuerySystem {
     handleQueryResponse(data) {
         // 显示结果区域
         this.resultsSection.style.display = 'block';
-        
+
         if (data.success) {
             // 清空结果表格
             this.resultsBody.innerHTML = '';
-            
+
             if (data.data && data.data.length > 0) {
                 // 显示结果表格，隐藏无结果提示
                 this.noResults.style.display = 'none';
-                
+
                 // 添加结果到表格
                 data.data.forEach((report) => {
                     this.addReportToTable(report);
@@ -228,17 +259,17 @@ class ReportQuerySystem {
      */
     addReportToTable(report) {
         const row = document.createElement('tr');
-        
+
         // 文件名单元格
         const nameCell = document.createElement('td');
         nameCell.textContent = report.fileName;
         row.appendChild(nameCell);
-        
+
         // 创建日期单元格
         const dateCell = document.createElement('td');
         dateCell.textContent = report.createTime || '未知';
         row.appendChild(dateCell);
-        
+
         // 下载链接单元格
         const linkCell = document.createElement('td');
         if (report.downloadUrl) {
@@ -248,12 +279,12 @@ class ReportQuerySystem {
             link.className = 'download-link';
             link.target = '_blank';
             link.title = `下载 ${report.fileName}`;
-            
+
             // 添加点击跟踪
             link.addEventListener('click', () => {
                 console.log(`用户下载报告: ${report.fileName}`);
             });
-            
+
             linkCell.appendChild(link);
         } else {
             const errorSpan = document.createElement('span');
@@ -262,10 +293,10 @@ class ReportQuerySystem {
             linkCell.appendChild(errorSpan);
         }
         row.appendChild(linkCell);
-        
+
         this.resultsBody.appendChild(row);
     }
-    
+
     /**
      * 检测是否为移动设备
      * @returns {boolean} 是否为移动设备
@@ -273,7 +304,7 @@ class ReportQuerySystem {
     isMobileDevice() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
-    
+
     /**
      * 处理窗口大小变化
      */
@@ -293,7 +324,7 @@ class ReportQuerySystem {
         this.resultsError.textContent = message;
         this.resultsError.style.display = 'block';
         this.resultsSection.style.display = 'block';
-        
+
         // 清空结果表格
         this.resultsBody.innerHTML = '';
         this.noResults.style.display = 'none';
@@ -304,9 +335,9 @@ class ReportQuerySystem {
 document.addEventListener('DOMContentLoaded', () => {
     // 创建并初始化报告查询系统实例
     const reportSystem = new ReportQuerySystem();
-    
+
     // 将实例暴露到window对象，便于调试
     window.reportSystem = reportSystem;
-    
+
     console.log('报告查询系统初始化完成');
 });

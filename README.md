@@ -1,12 +1,12 @@
 # 报告查询系统 (Report-YiDa)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)](https://nodejs.org/)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.6.0-brightgreen)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.18+-blue)](https://expressjs.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue)](https://www.docker.com/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-f7df1e)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![REST API](https://img.sh.shields.io/badge/API-RESTful-00C7B7)](https://restfulapi.net/)
+[![REST API](https://img.shields.io/badge/API-RESTful-00C7B7)](https://restfulapi.net/)
 [![DingTalk](https://img.shields.io/badge/Platform-DingTalk-0089FF)](https://www.dingtalk.com/)
 [![Yida](https://img.shields.io/badge/Platform-Yida-FF6A00)](https://www.dingtalk.com/qidian/)
 [![Responsive Design](https://img.shields.io/badge/UI-Responsive-4CAF50)](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design)
@@ -32,14 +32,14 @@
 
 ### 核心功能
 
-- **免登录查询**: 外部用户无需登录即可通过姓名和手机号查询报告
-- **安全验证**: 通过姓名和手机号双重验证确保数据安全
-- **灵活配置**: 支持通过环境变量对接不同宜搭实例
-- **响应式设计**: 适配各种设备屏幕尺寸
-- **缓存优化**: 内置缓存机制减少API调用次数
-- **容器化部署**: 支持Docker和Docker Compose部署
-- **API限流**: 防止恶意请求保护系统稳定性
-- **WebHook通知**: 实时查询事件通知，便于系统集成和监控
+-   **免登录查询**: 外部用户无需登录即可通过姓名和手机号查询报告
+-   **安全验证**: 通过姓名和手机号双重验证确保数据安全
+-   **灵活配置**: 支持通过环境变量对接不同宜搭实例
+-   **响应式设计**: 适配各种设备屏幕尺寸，支持深色模式
+-   **主题切换**: 支持手动切换亮色/深色主题，自动跟随系统偏好
+-   **缓存优化**: 内置缓存机制减少API调用次数
+-   **容器化部署**: 支持Docker和Docker Compose部署
+-   **WebHook通知**: 实时查询事件通知，便于系统集成和监控
 
 ## 🏗️ 技术架构
 
@@ -130,12 +130,11 @@ sequenceDiagram
 ### 技术栈
 
 #### 后端技术
-- **运行环境**: Node.js (>=16.0.0)
-- **Web框架**: Express.js 4.18+
-- **HTTP客户端**: Axios
-- **环境变量管理**: dotenv
-- **API限流**: express-rate-limit
-- **缓存**: 内存缓存 (Map对象)
+-   **运行环境**: Node.js (>=20.6.0)
+-   **Web框架**: Express.js 4.18+
+-   **HTTP客户端**: Native Fetch (Node.js内置)
+-   **环境变量管理**: Node.js内置 (--env-file)
+-   **缓存**: 内存缓存 (Map对象)
 
 #### 前端技术
 - **基础**: HTML5, CSS3, JavaScript (ES6+)
@@ -154,7 +153,6 @@ Report-YiDa/
 ├── public/                # 前端静态文件
 │   ├── index.html         # 主页面
 │   ├── styles.css         # 样式文件
-│   ├── magic-styles.css   # 魔法样式
 │   └── script.js          # 前端脚本
 ├── services/              # 服务层
 │   ├── cacheService.js    # 缓存服务
@@ -359,7 +357,7 @@ WEBHOOK_URL=https://your-webhook-endpoint.com/api/events
   "system": {
     "environment": "production",
     "source": "Report-YiDa",
-    "version": "1.0.0"
+    "version": "1.3.0"
   },
   "messageType": "search",
   "resultSummary": {},
@@ -388,7 +386,7 @@ WEBHOOK_URL=https://your-webhook-endpoint.com/api/events
   "system": {
     "environment": "production",
     "source": "Report-YiDa",
-    "version": "1.0.0"
+    "version": "1.3.0"
   },
   "messageType": "search",
   "resultSummary": {
@@ -644,10 +642,6 @@ A: 实现方案：
 
 - **[Node.js](https://nodejs.org/)** - 高性能的JavaScript运行时环境
 - **[Express.js](https://expressjs.com/)** - 简洁、灵活的Node.js Web应用框架
-- **[Axios](https://axios-http.com/)** - 基于Promise的HTTP客户端，用于浏览器和Node.js
-- **[dotenv](https://www.npmjs.com/package/dotenv)** - 从.env文件加载环境变量
-- **[express-rate-limit](https://www.npmjs.com/package/express-rate-limit)** - Express的请求限流中间件
-- **[node-fetch](https://www.npmjs.com/package/node-fetch)** - Node.js的轻量级fetch API实现
 
 ### 工具与资源
 

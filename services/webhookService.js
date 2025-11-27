@@ -1,4 +1,3 @@
-const axios = require('axios');
 const crypto = require('crypto');
 
 /**
@@ -14,10 +13,10 @@ class WebHookService {
     this.maxRetries = parseInt(process.env.WEBHOOK_MAX_RETRIES || '3'); // 默认3次
     // 重试延迟基数（毫秒）
     this.retryDelayBase = parseInt(process.env.WEBHOOK_RETRY_DELAY_BASE || '1000'); // 默认1秒
-    
+
     // 检查是否启用了WebHook功能
     this.isEnabled = !!(this.webhookUrl && this.webhookUrl.trim() !== '');
-    
+
     if (this.isEnabled) {
       console.log(`WebHook服务已启用，目标URL: ${this.webhookUrl}`);
     } else {
@@ -66,7 +65,7 @@ class WebHookService {
         // 添加系统信息
         system: {
           source: 'Report-YiDa',
-          version: '1.0.0',
+          version: '1.3.0',
           environment: process.env.NODE_ENV || 'production'
         }
       };
@@ -79,7 +78,7 @@ class WebHookService {
 
       // 发送WebHook请求（带重试机制）
       await this.sendWithRetry(webhookData);
-      
+
       console.log(`WebHook通知发送成功: ${webhookData.queryId}`);
       return true;
     } catch (error) {
@@ -99,20 +98,22 @@ class WebHookService {
    */
   async sendWithRetry(data, retryCount = 0) {
     try {
-      const response = await axios.post(this.webhookUrl, data, {
+      const response = await fetch(this.webhookUrl, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'User-Agent': 'Report-YiDa-WebHook/1.0.0'
         },
-        timeout: this.timeout
+        body: JSON.stringify(data),
+        signal: AbortSignal.timeout(this.timeout)
       });
-      
+
       // 检查响应状态码
-      if (response.status < 200 || response.status >= 300) {
+      if (!response.ok) {
         throw new Error(`WebHook服务器返回错误状态码: ${response.status}`);
       }
-      
-      return response.data;
+
+      return await response.json();
     } catch (error) {
       // 如果还有重试次数，则进行重试
       if (retryCount < this.maxRetries) {
@@ -120,14 +121,14 @@ class WebHookService {
         if (process.env.NODE_ENV !== 'test') {
           console.log(`WebHook请求失败，${delay}ms后进行第${retryCount + 1}次重试: ${error.message}`);
         }
-        
+
         // 等待指定时间
         await new Promise(resolve => setTimeout(resolve, delay));
-        
+
         // 递归重试
         return this.sendWithRetry(data, retryCount + 1);
       }
-      
+
       // 重试次数用完，抛出错误
       throw new Error(`WebHook请求失败，已达到最大重试次数(${this.maxRetries}): ${error.message}`);
     }
@@ -147,7 +148,7 @@ class WebHookService {
       pageSize: queryParams.pageSize,
       currentPage: queryParams.currentPage
     };
-    
+
     // 根据搜索类型添加相应的参数
     if (queryParams.searchType === 'nameAndPhone' && queryParams.searchValue) {
       processedParams.searchType = 'nameAndPhone';
@@ -160,7 +161,7 @@ class WebHookService {
       processedParams.searchType = 'phone';
       processedParams.phone = queryParams.searchValue;
     }
-    
+
     return {
       messageType: 'search',
       status: 'started',
@@ -190,7 +191,7 @@ class WebHookService {
       pageSize: queryParams.pageSize,
       currentPage: queryParams.currentPage
     };
-    
+
     // 根据搜索类型添加相应的参数
     if (queryParams.searchType === 'nameAndPhone' && queryParams.searchValue) {
       processedParams.searchType = 'nameAndPhone';
@@ -203,7 +204,7 @@ class WebHookService {
       processedParams.searchType = 'phone';
       processedParams.phone = queryParams.searchValue;
     }
-    
+
     return {
       messageType: 'search',
       status,
@@ -234,7 +235,7 @@ class WebHookService {
       pageSize: queryParams.pageSize,
       currentPage: queryParams.currentPage
     };
-    
+
     // 根据搜索类型添加相应的参数
     if (queryParams.searchType === 'nameAndPhone' && queryParams.searchValue) {
       processedParams.searchType = 'nameAndPhone';
@@ -247,7 +248,7 @@ class WebHookService {
       processedParams.searchType = 'phone';
       processedParams.phone = queryParams.searchValue;
     }
-    
+
     return {
       messageType: 'search',
       status: 'error',
@@ -277,7 +278,7 @@ class WebHookService {
       pageSize: queryParams.pageSize,
       currentPage: queryParams.currentPage
     };
-    
+
     // 根据搜索类型添加相应的参数
     if (queryParams.searchType === 'nameAndPhone' && queryParams.searchValue) {
       processedParams.searchType = 'nameAndPhone';
@@ -290,7 +291,7 @@ class WebHookService {
       processedParams.searchType = 'phone';
       processedParams.phone = queryParams.searchValue;
     }
-    
+
     return {
       messageType: 'search',
       status: 'no_results',

@@ -10,6 +10,9 @@ COPY . .
 # 安装依赖
 RUN npm install --legacy-peer-deps
 
+# 创建空的 .env 文件以满足启动命令的要求 (环境变量将由Docker注入)
+RUN touch .env
+
 # 暴露端口
 EXPOSE 8080
 

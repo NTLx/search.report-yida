@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-const axios = require('axios');
 const cacheService = require('./cacheService');
 
 // 配置常量 - 使用大写环境变量
@@ -42,7 +40,7 @@ async function fetchWithRetry(url, options, retries = MAX_RETRIES) {
       ...options,
       timeout: 10000, // 10秒超时
     });
-    
+
     if (!response.ok) {
       // 尝试获取错误响应内容
       let errorContent = '';
@@ -54,17 +52,17 @@ async function fetchWithRetry(url, options, retries = MAX_RETRIES) {
       }
       throw new Error(`HTTP error! status: ${response.status}, content: ${errorContent}`);
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error(`请求失败 (${url}): ${error.message}`);
-    
+
     if (retries > 0) {
       console.log(`剩余重试次数: ${retries}, 等待${RETRY_DELAY}ms后重试...`);
       await delay(RETRY_DELAY);
       return fetchWithRetry(url, options, retries - 1);
     }
-    
+
     throw error;
   }
 }
@@ -88,10 +86,10 @@ async function getAccessToken() {
       appKey: CLIENT_ID,
       appSecret: CLIENT_SECRET
     };
-    
+
     console.log(`请求URL: ${url}`);
     console.log('请求体:', JSON.stringify(requestBody));
-    
+
     const response = await fetchWithRetry(url, {
       method: 'POST',
       headers: {
@@ -99,17 +97,17 @@ async function getAccessToken() {
       },
       body: JSON.stringify(requestBody)
     });
-    
+
     console.log('API响应:', JSON.stringify(response));
-    
+
     if (!response.accessToken) {
       throw new Error(`获取accessToken失败: ${JSON.stringify(response)}`);
     }
-    
+
     // 将accessToken存入缓存，设置过期时间（比实际过期时间少10分钟，避免边界情况）
     const tokenTtl = (response.expireIn || 7200) * 1000 - 10 * 60 * 1000;
     cacheService.set(ACCESS_TOKEN_KEY, response.accessToken, tokenTtl);
-    
+
     console.log('成功获取并缓存accessToken');
     return response.accessToken;
   } catch (error) {
@@ -129,27 +127,27 @@ async function validateAccessToken(accessToken) {
   try {
     // 使用一个简单的API调用来验证token是否有效
     const url = `https://api.dingtalk.com/v1.0/contact/users/me`;
-    
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'x-acs-dingtalk-access-token': accessToken
       }
     });
-    
+
     // 检查响应状态码
     if (response.status === 401 || response.status === 403) {
       return false;
     }
-    
+
     // 尝试解析响应
     const responseData = await response.json();
-    
+
     // 检查响应中是否有错误信息
     if (responseData.code && (responseData.code === 'InvalidAuthentication' || responseData.code === 'InvalidToken')) {
       return false;
     }
-    
+
     return response.ok;
   } catch (error) {
     console.error('验证accessToken时发生错误:', error);
@@ -164,17 +162,17 @@ async function validateAccessToken(accessToken) {
 async function getValidAccessToken() {
   try {
     console.log('开始获取有效的accessToken...');
-    
+
     // 尝试从缓存获取accessToken
     let accessToken = cacheService.get(ACCESS_TOKEN_KEY);
     console.log('缓存检查结果:', accessToken ? '找到token' : '未找到token');
-    
+
     // 如果缓存中有token，验证其是否有效
     if (accessToken) {
       console.log('从缓存获取到token，开始验证...');
       const isValid = await validateAccessToken(accessToken);
       console.log('token验证结果:', isValid ? '有效' : '无效');
-      
+
       if (isValid) {
         console.log('使用缓存中的有效accessToken');
         return accessToken;
@@ -183,12 +181,12 @@ async function getValidAccessToken() {
         cacheService.delete(ACCESS_TOKEN_KEY);
       }
     }
-    
+
     // 获取新的accessToken
     console.log('缓存中无有效token，开始获取新的accessToken...');
     const newToken = await getAccessToken();
     console.log('成功获取新的accessToken，长度:', newToken ? newToken.length : 0);
-    
+
     return newToken;
   } catch (error) {
     console.error('获取有效accessToken时发生错误:', error.message);
@@ -206,13 +204,13 @@ async function getValidAccessToken() {
 async function getFormInstanceIds(accessToken, queryParams) {
   try {
     const { fromDate, toDate, searchType, searchValue, pageSize = 100, currentPage = 1 } = queryParams;
-    
+
     // 根据示例文档，使用正确的API端点
     const url = `https://api.dingtalk.com/v2.0/yida/forms/instances/ids/${APP_TYPE}/${FORM_UUID}?pageNumber=${currentPage}&pageSize=${pageSize}`;
-    
+
     // 构建搜索字段JSON，根据示例文档格式
     let searchFieldJson = {};
-    
+
     if (searchType === 'nameAndPhone' && searchValue) {
       // 同时使用姓名和手机号进行查询
       searchFieldJson[NAME_FIELD_ID] = searchValue.name;
@@ -222,7 +220,7 @@ async function getFormInstanceIds(accessToken, queryParams) {
     } else if (searchType === 'phone' && searchValue) {
       searchFieldJson[PHONE_FIELD_ID] = searchValue;
     }
-    
+
     // 如果有日期范围，添加到搜索条件
     if (fromDate && toDate) {
       searchFieldJson = {
@@ -233,7 +231,7 @@ async function getFormInstanceIds(accessToken, queryParams) {
         }
       };
     }
-    
+
     const requestBody = {
       systemToken: SYSTEM_TOKEN,
       userId: USERID,
@@ -241,10 +239,10 @@ async function getFormInstanceIds(accessToken, queryParams) {
       searchFieldJson: JSON.stringify(searchFieldJson),
       useAlias: true
     };
-    
+
     console.log(`步骤1: 获取实例ID列表 - 搜索类型=${searchType}, 搜索值=${searchValue}`);
     console.log('查询请求体:', JSON.stringify(requestBody, null, 2));
-    
+
     const response = await fetchWithRetry(url, {
       method: 'POST',
       headers: {
@@ -253,17 +251,17 @@ async function getFormInstanceIds(accessToken, queryParams) {
       },
       body: JSON.stringify(requestBody)
     });
-    
+
     console.log('查询响应:', JSON.stringify(response, null, 2));
-    
+
     // 根据示例文档，响应格式应为 {"pageNumber":1,"data":["实例ID1","实例ID2"],"totalCount":N}
     if (!response || !Array.isArray(response.data)) {
       throw new Error(`获取表单实例ID失败: 响应格式不匹配 - ${JSON.stringify(response)}`);
     }
-    
+
     const instanceIds = response.data;
     console.log(`步骤1完成: 找到 ${instanceIds.length} 个表单实例ID: ${instanceIds.join(', ')}`);
-    
+
     return {
       data: instanceIds,
       totalCount: response.totalCount || instanceIds.length,
@@ -286,7 +284,7 @@ async function getFormDataBatch(instanceIds, accessToken) {
   try {
     // 使用正确的API端点
     const url = `https://api.dingtalk.com/v1.0/yida/forms/instances/ids/query`;
-    
+
     const requestData = {
       formUuid: FORM_UUID,
       appType: APP_TYPE,
@@ -295,7 +293,7 @@ async function getFormDataBatch(instanceIds, accessToken) {
       needFormInstanceValue: true,
       userId: USERID
     };
-    
+
     console.log('批量获取表单实例数据请求:', {
       url,
       method: 'POST',
@@ -305,7 +303,7 @@ async function getFormDataBatch(instanceIds, accessToken) {
       },
       data: requestData
     });
-    
+
     const response = await fetchWithRetry(url, {
       method: 'POST',
       headers: {
@@ -314,9 +312,9 @@ async function getFormDataBatch(instanceIds, accessToken) {
       },
       body: JSON.stringify(requestData)
     });
-    
+
     console.log('批量获取表单实例数据响应:', JSON.stringify(response, null, 2));
-    
+
     // 根据API文档，响应格式为 { "result": [...] }
     if (response && response.result) {
       return response;
@@ -343,10 +341,10 @@ async function getFormDataBatch(instanceIds, accessToken) {
 async function queryReportData(queryParams) {
   try {
     const { fromDate, toDate, searchType, searchValue, pageSize = 100, currentPage = 1 } = queryParams;
-    
+
     // 步骤1: 获取访问令牌
     const accessToken = await getAccessToken();
-    
+
     // 步骤2: 获取表单实例ID列表
     const instanceIdsResponse = await getFormInstanceIds(accessToken, {
       fromDate,
@@ -356,7 +354,7 @@ async function queryReportData(queryParams) {
       pageSize,
       currentPage
     });
-    
+
     // 检查是否有实例ID
     if (!instanceIdsResponse.data || instanceIdsResponse.data.length === 0) {
       return {
@@ -368,18 +366,18 @@ async function queryReportData(queryParams) {
         message: '未找到符合条件的报告'
       };
     }
-    
+
     // 步骤3: 批量获取表单实例数据
     const formDataResponse = await getFormDataBatch(instanceIdsResponse.data, accessToken);
-    
+
     console.log('批量获取表单实例数据响应结构:', Object.keys(formDataResponse));
     if (formDataResponse.result) {
       console.log('批量获取表单实例数据结果数量:', formDataResponse.result.length);
     }
-    
+
     // 步骤4: 提取附件信息并处理下载链接
     const reports = await extractAttachments(formDataResponse.result || [], accessToken);
-    
+
     return {
       success: true,
       data: reports,
@@ -411,29 +409,29 @@ async function getAttachmentUrl(accessToken, formInstanceId, fileField) {
   try {
     // 参数验证和日志记录
     console.log(`获取附件下载链接: 表单实例ID=${formInstanceId}`);
-    
+
     if (!formInstanceId) {
       throw new Error('表单实例ID不能为空');
     }
-    
+
     if (!fileField) {
       throw new Error('文件字段数据不能为空');
     }
-    
+
     // 标准化fileField为数组格式
     const attachmentList = Array.isArray(fileField) ? fileField : [fileField];
-    
+
     if (attachmentList.length === 0) {
       throw new Error('文件字段数据为空数组');
     }
-    
+
     // 获取第一个附件的信息
     const attachment = attachmentList[0];
-    
+
     // 尝试多种可能的文件ID字段名
     const fileIdFields = ['fileId', 'id', 'file_id', 'objectId'];
     let fileId = null;
-    
+
     for (const field of fileIdFields) {
       if (attachment[field]) {
         fileId = attachment[field];
@@ -441,16 +439,16 @@ async function getAttachmentUrl(accessToken, formInstanceId, fileField) {
         break;
       }
     }
-    
+
     if (!fileId) {
       throw new Error(`附件缺少有效的文件ID字段，可用字段: ${Object.keys(attachment).join(', ')}`);
     }
-    
+
     const url = `https://api.dingtalk.com/v1.0/yida/forms/attachments/url`;
-    
+
     // 记录请求参数（不包含敏感信息）
     console.log(`准备请求临时下载链接，fileId=${fileId}`);
-    
+
     const response = await fetchWithRetry(url, {
       method: 'POST',
       headers: {
@@ -467,17 +465,17 @@ async function getAttachmentUrl(accessToken, formInstanceId, fileField) {
       maxRetries: 3, // 增加重试次数
       retryDelay: 2000 // 增加重试间隔
     });
-    
+
     // 详细的响应处理
     if (!response || typeof response !== 'object') {
       throw new Error(`获取附件下载链接失败: 无效的响应格式`);
     }
-    
+
     // 多种方式判断API响应是否成功
     if (response.errcode !== 0 && response.code !== 0 && response.success !== true) {
       throw new Error(`获取附件下载链接失败: ${response.message || response.errorMessage || JSON.stringify(response)}`);
     }
-    
+
     // 尝试多种可能的URL字段名
     let downloadUrl = null;
     if (response.result && response.result.url) {
@@ -487,11 +485,11 @@ async function getAttachmentUrl(accessToken, formInstanceId, fileField) {
     } else if (response.data && response.data.url) {
       downloadUrl = response.data.url;
     }
-    
+
     if (!downloadUrl) {
       throw new Error(`获取附件下载链接失败: 响应中缺少URL字段`);
     }
-    
+
     console.log(`成功获取附件下载链接`);
     return downloadUrl;
   } catch (error) {
@@ -510,14 +508,14 @@ async function getAttachmentUrl(accessToken, formInstanceId, fileField) {
 async function getTemporaryAttachmentUrl(accessToken, fileUrl, timeout = 60000) {
   try {
     console.log(`获取宜搭附件临时免登地址: fileUrl=${fileUrl}`);
-    
+
     if (!fileUrl) {
       throw new Error('文件URL不能为空');
     }
-    
+
     // 构建API请求URL
     const url = `https://api.dingtalk.com/v1.0/yida/apps/temporaryUrls/${APP_TYPE}`;
-    
+
     // 构建查询参数
     const params = new URLSearchParams({
       systemToken: SYSTEM_TOKEN,
@@ -526,26 +524,26 @@ async function getTemporaryAttachmentUrl(accessToken, fileUrl, timeout = 60000) 
       fileUrl: fileUrl,
       timeout: timeout.toString()
     });
-    
+
     const fullUrl = `${url}?${params.toString()}`;
-    
+
     console.log(`请求临时免登地址API: ${fullUrl}`);
-    
+
     const response = await fetchWithRetry(fullUrl, {
       method: 'GET',
       headers: {
         'x-acs-dingtalk-access-token': accessToken
       }
     });
-    
+
     // 检查响应是否包含临时免登地址
     if (!response || !response.result) {
       throw new Error(`获取临时免登地址失败: ${JSON.stringify(response)}`);
     }
-    
+
     const temporaryUrl = response.result;
     console.log(`成功获取临时免登地址: ${temporaryUrl}`);
-    
+
     return temporaryUrl;
   } catch (error) {
     console.error('获取宜搭附件临时免登地址时发生错误:', error.message || error);
@@ -562,7 +560,7 @@ async function getTemporaryAttachmentUrl(accessToken, fileUrl, timeout = 60000) 
 async function extractAttachments(formDataList, accessToken) {
   console.log('开始提取附件信息，表单数据数量:', formDataList.length);
   const reports = [];
-  
+
   for (const formData of formDataList) {
     console.log('处理表单数据:', formData.formInstanceId);
     try {
@@ -578,16 +576,16 @@ async function extractAttachments(formDataList, accessToken) {
         console.error('解析instanceValue失败:', e);
         continue;
       }
-      
+
       console.log('表单实例数据字段数量:', instanceValue.length);
-      
+
       // 查找附件字段
       const attachmentField = instanceValue.find(item => item.fieldId === ATTACHMENT_FIELD_ID);
-      
+
       if (attachmentField && attachmentField.fieldData && attachmentField.fieldData.value) {
         const attachmentList = attachmentField.fieldData.value;
         console.log('找到附件字段，附件数量:', attachmentList.length);
-        
+
         if (Array.isArray(attachmentList) && attachmentList.length > 0) {
           // 为每个附件创建报告记录
           for (const attachment of attachmentList) {
@@ -606,7 +604,7 @@ async function extractAttachments(formDataList, accessToken) {
                 createTime = formData.createTimeGMT;
               }
             }
-            
+
             // 构建原始下载URL
             let originalUrl = '';
             if (attachment.downloadUrl) {
@@ -629,7 +627,7 @@ async function extractAttachments(formDataList, accessToken) {
                 originalUrl = attachment.previewUrl;
               }
             }
-            
+
             reports.push({
               formInstanceId: formData.formInstanceId,
               fileName: attachment.name,
@@ -650,7 +648,7 @@ async function extractAttachments(formDataList, accessToken) {
       console.error(`处理表单数据失败:`, parseError.message);
     }
   }
-  
+
   // 为每个附件获取临时免登地址
   for (const report of reports) {
     if (report.originalUrl) {
@@ -669,7 +667,7 @@ async function extractAttachments(formDataList, accessToken) {
       report.error = '没有原始URL';
     }
   }
-  
+
   console.log('提取附件完成，报告数量:', reports.length);
   return reports;
 }

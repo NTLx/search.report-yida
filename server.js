@@ -1,10 +1,5 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const path = require('path');
-const rateLimit = require('express-rate-limit');
-
-// 首先加载环境变量
-dotenv.config();
 
 // 调试环境变量加载
 console.log('环境变量加载检查:');
@@ -44,35 +39,34 @@ app.use((req, res, next) => {
   next();
 });
 
-// 配置请求限流
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15分钟
-  max: 100, // 每IP限制请求数
-  standardHeaders: true,
-  legacyHeaders: false,
+// 配置CORS
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
 });
-app.use('/api', limiter);
 
 // API路由 - 查询报告
 app.post('/api/query-reports', async (req, res) => {
   // 生成查询ID
   const queryId = webhookService.generateQueryId();
   let queryStartTime = Date.now();
-  
+
   try {
     const { name, phone, fromDate, toDate, pageSize = 100, currentPage = 1 } = req.body;
-    
+
     // 输入验证
     if (!name || !phone) {
       return res.status(400).json({ success: false, message: '姓名和手机号为必填项' });
     }
-    
+
     // 验证手机号格式
     const phoneRegex = /^1[3-9]\d{9}$/;
     if (!phoneRegex.test(phone)) {
       return res.status(400).json({ success: false, message: '手机号格式不正确' });
     }
-    
+
     // 构建查询参数
     const queryParams = {
       searchType: 'nameAndPhone', // 新的搜索类型，表示同时使用姓名和手机号
@@ -85,9 +79,9 @@ app.post('/api/query-reports', async (req, res) => {
       pageSize,
       currentPage
     };
-    
+
     console.log(`查询请求: 姓名=${name}, 手机号=${phone}, 查询ID=${queryId}`);
-    
+
     // 发送查询开始事件的WebHook通知（异步，不阻塞主流程）
     const startEvent = webhookService.createQueryStartEvent(queryParams);
     webhookService.sendNotification({
@@ -98,10 +92,10 @@ app.post('/api/query-reports', async (req, res) => {
       // 只记录错误，不影响主流程
       console.error('发送查询开始WebHook通知失败:', error.message);
     });
-    
+
     // 查询报告数据 - 使用新的多步骤流程
     const response = await queryReportData(queryParams);
-    
+
     if (!response.success) {
       // 查询失败，发送错误事件的WebHook通知
       const errorEvent = webhookService.createQueryCompleteEvent(
@@ -113,13 +107,13 @@ app.post('/api/query-reports', async (req, res) => {
       webhookService.sendNotification(errorEvent).catch(error => {
         console.error('发送查询错误WebHook通知失败:', error.message);
       });
-      
+
       throw new Error(response.error || '查询报告数据失败');
     }
-    
+
     if (!response.data || response.data.length === 0) {
       console.log('未找到匹配的报告数据');
-      
+
       // 发送查询完成（无结果）事件的WebHook通知
       const noResultEvent = webhookService.createQueryCompleteEvent(
         queryParams,
@@ -130,17 +124,17 @@ app.post('/api/query-reports', async (req, res) => {
       webhookService.sendNotification(noResultEvent).catch(error => {
         console.error('发送查询完成（无结果）WebHook通知失败:', error.message);
       });
-      
-      return res.json({ 
-        success: true, 
-        data: [], 
+
+      return res.json({
+        success: true,
+        data: [],
         totalCount: 0,
-        message: '未找到相关报告' 
+        message: '未找到相关报告'
       });
     }
-    
+
     console.log(`查询完成，处理 ${response.data.length} 个报告数据`);
-    
+
     // 构建响应数据，包含文件名称、下载链接和创建时间
     const reportsWithUrls = response.data.map(report => {
       // 转换数据格式以匹配前端期望的格式
@@ -152,13 +146,13 @@ app.post('/api/query-reports', async (req, res) => {
         error: report.error || null
       };
     });
-    
+
     // 统计有效报告数量
     const validReports = reportsWithUrls.filter(report => report.downloadUrl);
     const errorReports = reportsWithUrls.filter(report => report.error);
-    
+
     console.log(`查询完成: ${validReports.length} 个有效报告${errorReports.length > 0 ? `, ${errorReports.length} 个有错误` : ''}`);
-    
+
     // 构建结果摘要
     const resultSummary = {
       totalCount: response.totalCount,
@@ -167,7 +161,7 @@ app.post('/api/query-reports', async (req, res) => {
       errorCount: errorReports.length,
       processingTime: Date.now() - queryStartTime
     };
-    
+
     // 发送查询完成事件的WebHook通知
     const completeEvent = webhookService.createQueryCompleteEvent(
       queryParams,
@@ -178,7 +172,7 @@ app.post('/api/query-reports', async (req, res) => {
     webhookService.sendNotification(completeEvent).catch(error => {
       console.error('发送查询完成WebHook通知失败:', error.message);
     });
-    
+
     // 返回分页信息和报告数据
     res.json({
       success: true,
@@ -198,7 +192,7 @@ app.post('/api/query-reports', async (req, res) => {
     });
   } catch (error) {
     console.error('查询报告时出错:', error);
-    
+
     // 发送查询失败事件的WebHook通知
     const failureEvent = webhookService.createQueryCompleteEvent(
       req.body,
@@ -209,7 +203,7 @@ app.post('/api/query-reports', async (req, res) => {
     webhookService.sendNotification(failureEvent).catch(webhookError => {
       console.error('发送查询失败WebHook通知失败:', webhookError.message);
     });
-    
+
     res.status(500).json({
       success: false,
       message: '服务器内部错误，请稍后再试',
