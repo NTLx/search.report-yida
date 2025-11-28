@@ -1,7 +1,7 @@
 # 报告查询系统 (Report-YiDa)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.6.0-brightgreen)](https://nodejs.org/)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.18+-blue)](https://expressjs.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue)](https://www.docker.com/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
@@ -130,7 +130,7 @@ sequenceDiagram
 ### 技术栈
 
 #### 后端技术
--   **运行环境**: Node.js (>=20.6.0)
+-   **运行环境**: Node.js (>=22.0.0)
 -   **Web框架**: Express.js 4.18+
 -   **HTTP客户端**: Native Fetch (Node.js内置)
 -   **环境变量管理**: Node.js内置 (--env-file)
@@ -170,7 +170,7 @@ Report-YiDa/
 
 ### 系统要求
 
-- Node.js 16.0.0 或更高版本
+- Node.js 22.0.0 或更高版本
 - npm 或 yarn
 - 有效的宜搭应用凭证
 

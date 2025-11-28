@@ -10,7 +10,7 @@
     "express": "^4.18.2"
   },
   "engines": {
-    "node": ">=20.6.0"
+    "node": ">=22.0.0"
   },
   "author": "NTLx <lx3325360@gmail.com>",
   "license": "MIT"
