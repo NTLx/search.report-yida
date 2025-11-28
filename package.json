@@ -4,14 +4,10 @@
   "description": "报告查询系统 - 通过姓名和手机号查询报告并提供下载功能",
   "main": "server.js",
   "scripts": {
-    "start": "node --env-file=.env server.js",
-    "deploy": "gh-pages -d public"
+    "start": "node --env-file=.env server.js"
   },
   "dependencies": {
     "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "gh-pages": "^6.1.1"
   },
   "engines": {
     "node": ">=20.6.0"
