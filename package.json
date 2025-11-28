@@ -2,6 +2,10 @@
   "name": "report-query-system",
   "version": "1.3.0",
   "description": "报告查询系统 - 通过姓名和手机号查询报告并提供下载功能",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NTLx/search.report-yida.git"
+  },
   "main": "server.js",
   "scripts": {
     "start": "node --env-file=.env server.js"
