@@ -204,7 +204,8 @@ class ReportQuerySystem {
      */
     async queryReports(data) {
         try {
-            const response = await fetch('/api/query-reports', {
+            const apiBaseUrl = (window.AppConfig && window.AppConfig.apiBaseUrl) || '';
+            const response = await fetch(`${apiBaseUrl}/api/query-reports`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

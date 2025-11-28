@@ -205,6 +205,35 @@ WEBHOOK_URL=https://your-webhook-endpoint.com/api/events
 2. **手机号** - 文本组件，用于存储用户手机号
 3. **附件** - 附件组件，用于存储报告文件
 
+## ☁️ 部署指南
+
+### 一键部署到 Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNTLx%2Fsearch.report-yida&env=USERID,CLIENT_ID,CLIENT_SECRET,APP_TYPE,SYSTEM_TOKEN,FORM_UUID,NAME_FIELD_ID,PHONE_FIELD_ID,ATTACHMENT_FIELD_ID)
+
+1. 点击上方按钮开始部署
+2. 在 Vercel 控制台中配置必要的环境变量（参考 `.env.example`）
+3. 等待部署完成即可访问
+
+### 部署到 GitHub Pages
+
+本项目的 GitHub Pages 部署仅包含前端静态页面。由于 GitHub Pages 不支持运行 Node.js 后端，您需要：
+
+1. **部署后端服务**：先将本项目部署到 Vercel 或其他支持 Node.js 的平台，获取后端 API 地址（例如 `https://your-app.vercel.app`）。
+2. **配置前端**：
+   - 修改 `public/config.js` 文件
+   - 将 `apiBaseUrl` 设置为您的后端服务地址：
+     ```javascript
+     window.AppConfig = {
+         apiBaseUrl: 'https://your-app.vercel.app'
+     };
+     ```
+3. **推送到 GitHub**：
+   - 代码推送到 `main` 分支后，GitHub Actions 会自动构建并部署到 GitHub Pages。
+   - 或者手动运行 `npm run deploy` 部署。
+
+> **注意**：如果使用 Vercel 部署全栈应用（前后端在一起），则**不需要**修改 `public/config.js`，保持默认空字符串即可。
+
 ## 🚀 开发流程
 
 ### 本地开发环境搭建
