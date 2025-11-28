@@ -215,6 +215,55 @@ WEBHOOK_URL=https://your-webhook-endpoint.com/api/events
 2. 在 Vercel 控制台中配置必要的环境变量（参考 `.env.example`）
 3. 等待部署完成即可访问
 
+### Docker 部署
+
+#### 1. 使用 Docker Compose (推荐)
+
+项目包含 `docker-compose.yml` 配置，可直接启动。
+
+1. 配置环境变量：
+   ```bash
+   cp .env.example .env
+   # 编辑 .env 文件填入必要信息
+   ```
+
+2. 启动服务：
+   ```bash
+   docker-compose up -d
+   ```
+
+#### 2. 使用 Docker Run
+
+直接运行 Docker 容器：
+
+```bash
+docker run -d \
+  --name report-yida \
+  -p 8080:8080 \
+  -e USERID=your_user_id \
+  -e CLIENT_ID=your_client_id \
+  -e CLIENT_SECRET=your_client_secret \
+  -e APP_TYPE=your_app_type \
+  -e SYSTEM_TOKEN=your_system_token \
+  -e FORM_UUID=your_form_uuid \
+  -e NAME_FIELD_ID=your_name_field_id \
+  -e PHONE_FIELD_ID=your_phone_field_id \
+  -e ATTACHMENT_FIELD_ID=your_attachment_field_id \
+  registry.cn-shanghai.aliyuncs.com/dev_env_tools/search.report-yida
+```
+
+#### 3. 本地构建镜像
+
+如果您想修改代码并重新构建镜像：
+
+```bash
+# 构建镜像
+docker build -t search.report-yida .
+
+# 运行容器
+docker run -d -p 8080:8080 --env-file .env search.report-yida
+```
+
 ## 🚀 开发流程
 
 ### 本地开发环境搭建
